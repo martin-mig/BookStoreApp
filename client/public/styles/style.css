@@ -1,0 +1,124 @@
+body{
+    background: white;
+    font-family: sans-serif, Arial, Helvetica;
+    text-align: center;
+    padding: 0px;
+    margin: 0px;
+}
+
+/*ESTILOS DEL LAYOUT PRINCIPAL*/
+.layout{
+    width: 100%;
+    height: auto;
+
+    display: grid;
+    grid-template-areas:
+        "header header header header"
+        "nav nav nav nav"
+        "content content content content"
+        "footer footer footer footer"
+    ;
+    grid-template-rows: 60px 240px 700px 70px;
+}
+
+/*ESTILOS DEL HEADER*/
+.header{
+    font-size: x-small;
+    grid-area: header;
+    background: #BCCEE6;
+    text-align: left;
+}
+
+.titulo{
+    display: inline-block; 
+    vertical-align: middle;
+    font-size:23px;
+    margin-left:15px;
+}
+
+.libroimg{
+    vertical-align: middle;
+    margin-top: 10px;
+}
+
+
+.with-nav-tabs.panel-primary .nav-tabs > li.active > a, .with-nav-tabs.panel-primary .nav-tabs > li.active > a:hover, .with-nav-tabs.panel-primary .nav-tabs > li.active > a:focus {
+    color: #428bca;
+    background-color: #fff;
+    border-color: #428bca;
+    border-bottom-color: transparent;
+}
+  .with-nav-tabs.panel-primary .nav-tabs > li > a, .with-nav-tabs.panel-primary .nav-tabs > li > a:hover, .with-nav-tabs.panel-primary .nav-tabs > li > a:focus {
+    color: #fff;
+}
+.with-nav-tabs.panel-primary .nav-tabs > li > a:hover, .with-nav-tabs.panel-primary .nav-tabs > li > a:focus {
+    background-color: #428bca;
+}
+
+/*ESTILOS DE LA BARRA DE NAVEGACIÓN*/
+.panelnav {
+    grid-area:nav;
+    margin-bottom: 5px;
+    background-color: #fff;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+}
+
+.tab-content{
+    text-align: left;
+}
+
+.imagen_nav{
+    display: flex; 
+    align-items: left;
+    gap: 15px;
+}
+.each_imagen_nav{
+    width: 100px; 
+    height: 100px;
+}
+.center_image{
+    text-align: center;
+}
+.content{
+    grid-area:content;
+   /* border: 1px solid black;*/
+    background: #d1defa;
+}
+.footer{
+    grid-area:footer;
+    /*border: 1px solid black;*/
+    background: #337ab7;
+}
+/*Vista panel de busqueda;*/
+.panel-info>.panel-heading {
+    color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+    text-align: left;
+}
+
+td.details-control {
+	cursor: pointer;
+    width: 3px;
+}
+
+tr.loading td {
+	text-align: center;
+}
+
+.checkbox label {
+    width: 150px; 
+    display: inline-block;
+}
+
+.my-custom-wrapper {
+    padding: 7px;
+}
+
+table.dataTable th,
+table.dataTable td {
+    text-align: center;
+}
