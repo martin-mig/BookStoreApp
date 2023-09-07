@@ -55,6 +55,14 @@ body{
     background-color: #428bca;
 }
 
+.activado{
+
+    color: #428bca;
+    background-color: #fff;
+    border-color: #428bca;
+    border-bottom-color: transparent;
+
+}
 /*ESTILOS DE LA BARRA DE NAVEGACIÓN*/
 .panelnav {
     grid-area:nav;
@@ -88,9 +96,11 @@ body{
     background: #d1defa;
 }
 .footer{
-    grid-area:footer;
-    /*border: 1px solid black;*/
+    grid-area: footer;
     background: #337ab7;
+    display: flex;
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */ 
 }
 /*Vista panel de busqueda;*/
 .panel-info>.panel-heading {
@@ -122,3 +132,24 @@ table.dataTable th,
 table.dataTable td {
     text-align: center;
 }
+
+.card {
+    background: var(--surface-card);
+    padding: 2rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
+.search-button input[type="submit"] {
+    opacity: 0;
+    position: absolute;
+    z-index: -1;
+  }
+  
+  .search-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .search-button:active {
+    background-color: #003f80;
+  }

@@ -4,6 +4,8 @@ const {connection} = require("./database/connection");
 const PUERTO = 3001;
 const route_book = require("./routes/book");
 const cors = require("cors");
+const bodyparser = require('body-parser');
+
 
 app.listen(PUERTO)
 console.log('Server on port 3001');
@@ -12,5 +14,8 @@ console.log('Server on port 3001');
 
 connection();
 app.use(cors());
+
+app.use(bodyparser.json());
+
 
 app.use("/", route_book);
