@@ -8,7 +8,7 @@ export const Inicio = () => {
                     <div className="panel-heading">
                         <ul className="nav nav-tabs">
                             <li  id="consultas">
-                                <NavLink variant="pills"
+                                <NavLink 
                                     to="/consultas"
                                    className={
                                     ({isActive}) => {
