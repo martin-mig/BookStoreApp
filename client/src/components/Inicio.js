@@ -29,11 +29,50 @@ export const Inicio = () => {
    
                                 >Stock </NavLink>
                             </li>
-                            
-                            <li><a data-toggle="tab" href="#tab2primary">Venta</a></li>
-                            <li><a data-toggle="tab" href="#tab3primary">Clientes</a></li>
-                            <li><a data-toggle="tab" href="#tab4primary">Usuarios</a></li>
-                            <li><a data-toggle="tab" href="#tab5primary">Sistema</a></li>
+                            <li  id="venta">
+                                <NavLink 
+                                    to="/venta"
+                                   className={
+                                    ({isActive}) => {
+                                        return isActive ? "active" : "";
+                                    }
+                                   }
+   
+                                >Venta </NavLink>
+                            </li>
+                            <li  id="clientes">
+                                <NavLink 
+                                    to="/clientes"
+                                   className={
+                                    ({isActive}) => {
+                                        return isActive ? "active" : "";
+                                    }
+                                   }
+   
+                                >Clientes </NavLink>
+                            </li>
+                            <li  id="usuarios">
+                                <NavLink 
+                                    to="/usuarios"
+                                   className={
+                                    ({isActive}) => {
+                                        return isActive ? "active" : "";
+                                    }
+                                   }
+   
+                                >Usuarios </NavLink>
+                            </li>
+                            <li  id="usuarios">
+                                <NavLink 
+                                    to="/sistema"
+                                   className={
+                                    ({isActive}) => {
+                                        return isActive ? "active" : "";
+                                    }
+                                   }
+   
+                                >sistema </NavLink>
+                            </li>
                         </ul>
                     </div> 
                     
