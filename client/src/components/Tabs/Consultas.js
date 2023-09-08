@@ -11,34 +11,34 @@ export const Consultas = () => {
                             <div className="center_image">
                                 <Link to="libros">
                                     <button type="button" >  
-                                        <img src={require('../images/search.png')} alt="imagen_search"  className="each_imagen_nav"></img>
+                                        <img src={require('../../images/search.png')} alt="imagen_search"  className="each_imagen_nav"></img>
                                     </button>
                                 </Link>    
                                 <p><strong>Libros</strong></p>
                             </div>
                             <div className="center_image">
-                                <Link to="/usuarios">
+                                <Link to="usuarios">
                                     <button type="button">  
-                                        <img src={require('../images/users.png')} alt="imagen_users" className="each_imagen_nav"></img>
+                                        <img src={require('../../images/users.png')} alt="imagen_users" className="each_imagen_nav"></img>
                                     </button>
                                 </Link> 
                                 <p><strong>Usuarios</strong></p>
                             </div>  
                             <div className="center_image">
                                 <button type="button">  
-                                    <img src={require('../images/stock.png')} alt="imagen_stock" className="each_imagen_nav"></img>
+                                    <img src={require('../../images/stock.png')} alt="imagen_stock" className="each_imagen_nav"></img>
                                 </button>
                                 <p><strong>Stock</strong></p>
                             </div>    
                             <div className="center_image">
                                 <button type="button">  
-                                    <img src={require('../images/customer.png')} alt="Imagen_customer" className="each_imagen_nav"></img>
+                                    <img src={require('../../images/customer.png')} alt="Imagen_customer" className="each_imagen_nav"></img>
                                 </button>
                                 <p><strong>Clientes</strong></p>
                             </div>  
                             <div className="center_image">
                                 <button type="button">  
-                                    <img src={require('../images/sale.png')} alt="imagen_sale" className="each_imagen_nav"></img>
+                                    <img src={require('../../images/sale.png')} alt="imagen_sale" className="each_imagen_nav"></img>
                                 </button>
                                 <p><strong>Ventas</strong></p>
                             </div>      

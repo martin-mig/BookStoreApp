@@ -101,6 +101,10 @@ body{
     display: flex;
     justify-content: center; /* Centra horizontalmente */
     align-items: center; /* Centra verticalmente */ 
+    position: fixed; /* Fija la posición */
+    bottom: 0; /* Lo coloca en la parte inferior */
+    width: 100%; /* Ocupa todo el ancho de la pantalla */
+
 }
 /*Vista panel de busqueda;*/
 .panel-info>.panel-heading {

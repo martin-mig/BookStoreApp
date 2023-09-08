@@ -2,11 +2,13 @@ import React from 'react';
 import {Routes, Route, Link, BrowserRouter } from 'react-router-dom';
 import { Inicio } from '../components/Inicio';
 import { Header } from '../components/Header';
-import { Consultas } from '../components/Consultas';
-import { Stock } from '../components/Stock';
+import { Consultas } from '../components/Tabs/Consultas';
+import { Stock } from '../components/Tabs/Stock';
 import { Libros } from '../components/Libros';
 import { Usuarios } from '../components/Usuarios';
-
+import { Error } from '../components/Error';
+import { Footer } from '../components/Footer';
+ 
 export const RouterPrincipal = () => {
     return (
         <BrowserRouter>
@@ -21,22 +23,12 @@ export const RouterPrincipal = () => {
                             <Route path="libros" element={<Libros />} />
                             <Route path="usuarios" element={<Usuarios />} />
                         </Route>
-                       
                         <Route path="/stock" element={<Stock />} />
-
-                        <Route path="*" element={(
-                            <>   
-                                <h1>Error 404</h1>
-                                <strong>Esta página no existe</strong>
-                            </> 
-                        )} />
+                        <Route path="*" element={<Error/>} />
                     </Routes>
                 </section>
-                <hr/>
-
-                <footer>
-                    Este es el pie de pagina
-                </footer>
+            
+                <Footer></Footer>
             </div>
         </BrowserRouter>
     )
