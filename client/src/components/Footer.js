@@ -4,7 +4,7 @@ export const Footer = () => {
     return(
         <>
            <div className="footer">
-                <strong>&copy; Boherdi Electronica S.R.L </strong>
+                <strong>&copy; BO S.R.L </strong>
             </div>
         </>
     )

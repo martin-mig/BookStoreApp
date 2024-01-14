@@ -16,7 +16,7 @@ export const Inicio = () => {
                                     }
                                    }
    
-                                >Consultas </NavLink>
+                                >Searchs </NavLink>
                             </li>
                             <li  id="stock">
                                 <NavLink 
@@ -38,7 +38,7 @@ export const Inicio = () => {
                                     }
                                    }
    
-                                >Venta </NavLink>
+                                >Sale </NavLink>
                             </li>
                             <li  id="clientes">
                                 <NavLink 
@@ -49,7 +49,7 @@ export const Inicio = () => {
                                     }
                                    }
    
-                                >Clientes </NavLink>
+                                >Customers </NavLink>
                             </li>
                             <li  id="usuarios">
                                 <NavLink 
@@ -60,7 +60,7 @@ export const Inicio = () => {
                                     }
                                    }
    
-                                >Usuarios </NavLink>
+                                >Users </NavLink>
                             </li>
                             <li  id="usuarios">
                                 <NavLink 
@@ -71,7 +71,7 @@ export const Inicio = () => {
                                     }
                                    }
    
-                                >sistema </NavLink>
+                                >Sistem </NavLink>
                             </li>
                         </ul>
                     </div> 

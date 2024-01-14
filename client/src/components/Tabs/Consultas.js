@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link, Outlet } from 'react-router-dom';
+import { ButtonNB } from '../Button/ButtonNB';
 
 export const Consultas = () => {
     return(
@@ -9,40 +10,23 @@ export const Consultas = () => {
                     <div className="tab-pane fade active in" id="home">
                         <div className="imagen_nav">
                             <div className="center_image">
-                                <Link to="libros">
-                                    <button type="button" >  
-                                        <img src={require('../../images/search.png')} alt="imagen_search"  className="each_imagen_nav"></img>
-                                    </button>
-                                </Link>    
-                                <p><strong>Libros</strong></p>
+                                <ButtonNB img_url="books.png" alt="Books" nombre="libros"/>
                             </div>
                             <div className="center_image">
-                                <Link to="usuarios">
-                                    <button type="button">  
-                                        <img src={require('../../images/users.png')} alt="imagen_users" className="each_imagen_nav"></img>
-                                    </button>
-                                </Link> 
-                                <p><strong>Usuarios</strong></p>
+                                <ButtonNB img_url="users.png" alt="Users" nombre="usuariosc" />
                             </div>  
                             <div className="center_image">
-                                <button type="button">  
-                                    <img src={require('../../images/stock.png')} alt="imagen_stock" className="each_imagen_nav"></img>
-                                </button>
-                                <p><strong>Stock</strong></p>
-                            </div>    
+                                <ButtonNB img_url="stock.png" alt="Stock" nombre="stockc"/>
+                            </div>                                
                             <div className="center_image">
-                                <button type="button">  
-                                    <img src={require('../../images/customer.png')} alt="Imagen_customer" className="each_imagen_nav"></img>
-                                </button>
-                                <p><strong>Clientes</strong></p>
+                                 <ButtonNB img_url="customer.png" alt="Customers" nombre="clientesc"/>
                             </div>  
                             <div className="center_image">
-                                <button type="button">  
-                                    <img src={require('../../images/sale.png')} alt="imagen_sale" className="each_imagen_nav"></img>
-                                </button>
-                                <p><strong>Ventas</strong></p>
+                                <ButtonNB img_url="sale.png" alt="Sales" nombre="ventasc"/>
                             </div>      
-
+                            <div className="center_image">
+                                <ButtonNB img_url="descargas.png" alt="Dowload" nombre="descargasc"/>
+                            </div> 
                         </div>
                     </div>
                     <div className="tab-pane fade" id="tab1primary">Primary 1</div>

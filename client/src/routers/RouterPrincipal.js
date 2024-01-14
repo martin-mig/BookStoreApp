@@ -1,5 +1,5 @@
 import React from 'react';
-import {Routes, Route, Link, BrowserRouter } from 'react-router-dom';
+import {Routes, Route, Link, BrowserRouter, Navigate } from 'react-router-dom';
 import { Inicio } from '../components/Inicio';
 import { Header } from '../components/Header';
 import { Consultas } from '../components/Tabs/Consultas';
@@ -8,10 +8,15 @@ import { Venta } from '../components/Tabs/Venta';
 import { Clientes } from '../components/Tabs/Clientes';
 import { Usuarios } from '../components/Tabs/Usuarios';
 import { Sistema } from '../components/Tabs/Sistema';
-import { Libros } from '../components/Libros';
+import { Libros } from '../components/Button/Libros';
 import { Error } from '../components/Error';
 import { Footer } from '../components/Footer';
- 
+import { StockC } from '../components/Button/StockC'; 
+import { ClientesC } from '../components/Button/ClientesC'; 
+import { VentasC } from '../components/Button/VentasC'; 
+import { UsuariosC } from '../components/Button/UsuariosC'; 
+import { DescargaC } from '../components/Button/DescargaC';
+
 export const RouterPrincipal = () => {
     return (
         <BrowserRouter>
@@ -19,12 +24,15 @@ export const RouterPrincipal = () => {
                 <Header></Header>
                 <Inicio></Inicio>
                 <section>
-
                     <Routes>
-                        <Route path="/" element={<Consultas />} />
+                        <Route path="/" element={<Navigate to="/consultas" />} />
                         <Route path="/consultas/*" element={<Consultas />}>
                             <Route path="libros" element={<Libros />} />
-                            <Route path="usuarios" element={<Usuarios />} />
+                            <Route path="usuariosc" element={<UsuariosC />} />
+                            <Route path="stockc" element={<StockC />} />
+                            <Route path="clientesc" element={<ClientesC />} />
+                            <Route path="ventasc" element={<VentasC />} />
+                            <Route path="descargasc" element={<DescargaC />} />
                         </Route>
                         <Route path="/stock" element={<Stock />} />
                         <Route path="/venta" element={<Venta />} />
