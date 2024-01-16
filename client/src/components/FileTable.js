@@ -3,20 +3,15 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Rating } from 'primereact/rating';
 import { Tag } from 'primereact/tag';
-import { Dropdown } from 'primereact/dropdown';
 import { Toolbar } from 'primereact/toolbar';
 import { Button } from 'primereact/button';
-
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
-import { RadioButton } from 'primereact/radiobutton';
 import { InputNumber } from 'primereact/inputnumber';
-import { classNames } from 'primereact/utils';
 import { Calendar } from 'primereact/calendar';
 import { Toast } from 'primereact/toast';
-import { usePostAjax } from '../hooks/usePostAjax';
-import { useDeleteAjax } from '../hooks/useDeleteAjax';
+import { useAjax } from '../hooks/useAjax';
 
 export const FileTable = ( data ) => {
     
@@ -32,18 +27,15 @@ export const FileTable = ( data ) => {
        categories: [],
 
     };
-    const url = 'http://localhost:3001/add-book';
-    const urlDelete = 'http://localhost:3001/delete-books';
-    const { databook , loading, error, postData } = usePostAjax(url);
-    const { deleteData , deleteLoading, deleteError, funcDeleteData } = useDeleteAjax(urlDelete);
 
-    const initialData = data.data; // Reemplaza 'data.data' con tus datos reales
+    const [ajaxUrl, SetAjaxUrl] = useState("");
+    const { databook , loading, error, postData, putData, deleteData } = useAjax(ajaxUrl);
+
+    const initialData = data.data;
    
-    //const [books, setBooks] = useState();
     const [products, setProducts] = useState(initialData);
 
     const [expandedRows, setExpandedRows] = useState(null);
-    const [statuses ] = useState([]);
 
     const [product, setProduct] = useState(emptyProduct);
 
@@ -53,6 +45,12 @@ export const FileTable = ( data ) => {
     const [selectedProducts, setSelectedProducts] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
+
+    const [dialogType, setDialogType] = useState(null);
+    const [modifiedProduct, setModifiedProduct] = useState({})
+
+    const [modifyProductDialog, setmodifyProductDialog] = useState(false);
+
     const toast = useRef(null);
     const dt = useRef(null);
 
@@ -63,7 +61,7 @@ export const FileTable = ( data ) => {
     const allowExpansion = () => {
         return true;
     };
-
+    
     const rowExpansionTemplate = (data) => {
         return (
             <div>
@@ -78,10 +76,10 @@ export const FileTable = ( data ) => {
                         <strong>Categories :</strong>  {data.categories.join(', ')}
                     </li>
                     <li>
-                        <strong>Published :</strong>  {(new Date(data.publishedDate)).toLocaleDateString()}
+                        <strong>Published :</strong>  {(new Date(data.publishedDate)).toLocaleDateString('en-US')}
                     </li>
-                    </ul>    
-                    </div>
+                </ul>    
+            </div>
         );
     };
 
@@ -119,6 +117,24 @@ export const FileTable = ( data ) => {
         setProduct(emptyProduct);
         setSubmitted(false);
         setProductDialog(true);
+        setDialogType('add');
+        SetAjaxUrl('http://localhost:3001/add-book');
+    };
+
+    const modifySelected = () =>{
+        if (selectedProducts.length > 1){
+            setmodifyProductDialog(true);
+        }
+        else{
+            setProductDialog(true); 
+            setDialogType('modify');
+            setModifiedProduct(selectedProducts[0]);
+            SetAjaxUrl('http://localhost:3001/edit-book');
+        }
+    }
+
+    const hideModifyProductsDialog = () => {
+        setmodifyProductDialog(false);
     };
 
     const confirmDeleteSelected = () => {
@@ -130,6 +146,7 @@ export const FileTable = ( data ) => {
             <div className="flex flex-wrap gap-2">
                 <Button label="New" icon="pi pi-plus" severity="success" onClick={openNew} />
                 <Button label="Delete" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedProducts || !selectedProducts.length} />
+                <Button label="Update" icon="pi pi-refresh" severity="info" onClick={modifySelected} disabled={!selectedProducts || !selectedProducts.length}/>
             </div>
         );
     };
@@ -142,21 +159,6 @@ export const FileTable = ( data ) => {
         return <Button label="Export" icon="pi pi-upload" className="p-button-help" onClick={exportCSV} />;
     };
 
-    // const statusEditor = (options) => {
-    //     return (
-    //         <Dropdown
-    //             value={options.value}
-    //             options={statuses}
-    //             onChange={(e) => options.editorCallback(e.value)}
-    //             placeholder="Select a Status"
-    //             itemTemplate={(option) => {
-    //                 return <Tag value={option} severity={getSeverity(option)}></Tag>;
-    //             }}
-    //         />
-    //     );
-    // };
- ///////////////////////////////////////Dialog Add///////////////////////////////////////////////////////////////////
- 
     const hideDialog = () => {
         setSubmitted(false);
         setProductDialog(false);
@@ -164,92 +166,105 @@ export const FileTable = ( data ) => {
 
     const onInputChange = (e, name) => {
         const val = (e.target && e.target.value) || '';
-        let _product = { ...product };
 
-        _product[`${name}`] = val;
+        if (dialogType === 'modify'){
+            let _modifiedProduct = { ...modifiedProduct };
 
-        setProduct(_product);
+            _modifiedProduct[`${name}`] = val;
+    
+            setModifiedProduct(_modifiedProduct);
+        }
+        else{
+            let _product = { ...product };
+
+            _product[`${name}`] = val;
+
+            setProduct(_product);
+        }
     };
 
-    const onCategoryChange = (e) => {
-        let _product = { ...product };
+    const onInputArrayChange = (e, name) => {
+       
+        const val = (e.target && e.target.value) || '';
 
-        _product['category'] = e.value;
-        setProduct(_product);
+        if(dialogType === 'modify'){
+            let _modifiedProduct = {...modifiedProduct};
+
+            _modifiedProduct[name] = val.split(',').map(author => author.trim());
+
+            setModifiedProduct(_modifiedProduct);
+        }
+        else{
+            let _product = { ...product };
+
+            _product[name] = val.split(',').map(author => author.trim());
+        
+            setProduct(_product);
+        }
     };
 
     const onInputNumberChange = (e, name) => {
         const val = e.value || 0;
-        let _product = { ...product };
 
-        _product[`${name}`] = val;
+        if(dialogType === 'modify'){
+            let _modifiedProduct = { ...modifiedProduct };
 
-        setProduct(_product);
+            _modifiedProduct[`${name}`] = val;
+
+            setModifiedProduct(_modifiedProduct);
+        }
+        else{
+            let _product = { ...product };
+
+            _product[`${name}`] = val;
+
+            setProduct(_product);
+        }
     };
 
     const onDateChange = (e, name) => {
         const val = e.value;
-        //ajustar la fecha al formato que quiere la DB
-        let _product = { ...product };
+        if(dialogType === 'modify'){
+            let _modifiedProduct = { ...modifiedProduct };
 
-        _product[`${name}`] = val;
+            _modifiedProduct[`${name}`] = val;
+            console.log("valor calendario " , val);
 
-        setProduct(_product);
+            setModifiedProduct(_modifiedProduct);
+        }
+        else{
+            //ajustar la fecha al formato que quiere la DB
+            let _product = { ...product };
+
+            _product[`${name}`] = val;
+
+            setProduct(_product);
+        }
     };
 
-    const saveProduct = () => {
-        console.log("llegaaa al save")
+    const saveProduct = (operacion) => {
         setSubmitted(true);
 
-        if (product.title.trim()) {
-            let _products = [...products];
-            let _product = { ...product };
-           // console.log("estos son los productos " + products)
-            console.log("este es el producto " + JSON.stringify(_product));
+        let _products = [...products];
+        let _product = { ...product };
+        if (operacion === 'add'){
+            console.log("llega al add2")
+            _products.push(_product);
 
-            if (product.id) {
-                const index = findIndexById(product.id);
-
-                _products[index] = _product;
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
-            } else {
-                _product.id = createId();
-                _product.image = 'product-placeholder.svg';
-                _products.push(_product);
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
-            }
-
-            setProducts(_products);
-            setProductDialog(false);
+            console.log("AjaxURL " + ajaxUrl)
             postData(product);
-            setProduct(emptyProduct);
-            
-            // mandr a la base de datos
+            //chequear databook o error
+            setProducts(_products);
+        }else
+        {
+            putData(modifiedProduct);
+            //sobreescribo en el array el producto modificado
+            setProducts((_products) => _products.map(obj => (obj._id === modifiedProduct._id ? modifiedProduct : obj)));          
         }
-    };
-
-    const findIndexById = (id) => {
-        let index = -1;
-
-        for (let i = 0; i < products.length; i++) {
-            if (products[i].id === id) {
-                index = i;
-                break;
-            }
-        }
-
-        return index;
-    };
-
-     const createId = () => {
-        let id = '';
-        let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-        for (let i = 0; i < 5; i++) {
-            id += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-
-        return id;
+        
+        setProductDialog(false);
+        setProduct(emptyProduct);
+        setSelectedProducts(null);
     };
 
     const hideDeleteProductsDialog = () => {
@@ -259,21 +274,16 @@ export const FileTable = ( data ) => {
     const deleteSelectedProducts = async () => {
         toast.current.show({ severity: 'info', summary: 'Sticky', detail: 'Message Content', sticky: true });
         let _products = products.filter((val) => !selectedProducts.includes(val));
-        
-        console.log("productos a borrar: ", _products);
-        console.log("productos restantes:", products);
-        await funcDeleteData(selectedProducts);
-        
-        //deletedData es el/los objeto/s borrados
+
+        await deleteData(selectedProducts);
         
         setProducts(_products);
         setDeleteProductsDialog(false);
         setSelectedProducts(null);
-        if(!deleteLoading){
+        if(!loading){
             toast.current.clear();
             toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Products Deleted', life: 3000 });
-        }
-        
+        }   
     };
 
     const deleteProductsDialogFooter = (
@@ -286,19 +296,41 @@ export const FileTable = ( data ) => {
     const productDialogFooter = (
         <React.Fragment>
             <Button label="Cancel" icon="pi pi-times" outlined onClick={hideDialog} />
-            <Button label="Save" icon="pi pi-check" onClick={saveProduct} />
+            {/*<Button label="Save" icon="pi pi-check" onClick={saveProduct} />*/}
+            <Button label="Save" icon="pi pi-check" onClick={() => saveProduct(dialogType)} />
+
         </React.Fragment>
     );
+
+    const header = (
+        <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
+            <h4 className="m-0">Table Books</h4>
+            <span className="p-input-icon-left">
+                <i className="pi pi-search" />
+                <InputText type="search" onInput={(e) => setGlobalFilter(e.target.value)} placeholder="Search..." />
+            </span>
+        </div>
+    );
+
+    function convertirFormatoFecha(fechaISO) {
+        const fecha = new Date(fechaISO);
+        return fecha;
+    }
+ 
  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     return (
         <div>
             <Toast ref={toast} />
+           
             <div className="card">
-                <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
-                <DataTable value={products} selectionMode="single" selection={selectedProducts} onSelectionChange={(e) => setSelectedProducts(e.value)}
+           
+            <Toolbar className="mb-3" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
+          
+                <DataTable ref={dt} value={products} editMode="cell" selectionMode="single" selection={selectedProducts} onSelectionChange={(e) => setSelectedProducts(e.value)}
                     showGridlines paginator rows={5} scrollable scrollHeight="400px" rowsPerPageOptions={[5, 10, 25, 50]}
                     expandedRows={expandedRows} onRowToggle={(e) => setExpandedRows(e.data)}
                     rowExpansionTemplate={rowExpansionTemplate}
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products" globalFilter={globalFilter} header={header}
                 >
                     <Column selectionMode="multiple" exportable={false}></Column>
                     <Column expander={allowExpansion} style={{ width: '5rem' }} />
@@ -308,80 +340,84 @@ export const FileTable = ( data ) => {
                     <Column field="stock" header="Stock" body={stockBodyTemplate} ></Column>
                     <Column field="rating" header="Reviews" body={ratingBodyTemplate}></Column>
                 </DataTable>
+             
             </div>
 
             <Dialog visible={productDialog} style={{ width: '42rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header="Book Details" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
-            {product.image && <img src={`https://primefaces.org/cdn/primereact/images/product/${product.image}`} alt={product.image} className="product-image block m-auto pb-3" />}
-            <div className="formgrid grid">
-                <div className="field col">
-                    <label htmlFor="title" className="font-bold">
-                        Title
-                    </label>
-                    <InputText id="title" value={product.title} onChange={(e) => onInputChange(e, 'title')} />
+                <div className="formgrid grid">
+                    <div className="field col">
+                        <label htmlFor="title" className="font-bold">
+                            Title
+                        </label>
+                        <InputText id="title" value = {(dialogType === 'add') ? product.title : modifiedProduct.title}  placeholder='Title' onChange={(e) => onInputChange(e, 'title')} />
+                    </div>
+                    <div className="field col">
+                        <label htmlFor="isbn" className="font-bold">
+                            ISBN
+                        </label>
+                        <InputText id="isbn" value = {(dialogType === 'add') ? product.isbn : modifiedProduct.isbn} placeholder= 'ISBN' onChange={(e) => onInputChange(e, 'isbn')} />
+                    </div>
+                    <div className="field col">
+                        <label htmlFor="author"  className="font-bold">
+                            Author
+                        </label>
+                        <InputText id="author" value = {(dialogType === 'add') ? product.authors : modifiedProduct.authors} placeholder= 'Authors 1, Authors 2' onChange={(e) => onInputArrayChange(e, 'authors')} />
+                    </div>
                 </div>
-                <div className="field col">
-                    <label htmlFor="isbn" className="font-bold">
-                        ISBN
-                    </label>
-                    <InputText id="isbn" value={product.isbn} onChange={(e) => onInputChange(e, 'isbn')} />
+                <div className="formgrid grid">
+                    <div className="field col">
+                        <label htmlFor="stock" className="font-bold">
+                            Stock
+                        </label>
+                        <InputNumber id="stock" value = {(dialogType === 'add') ? product.stock : modifiedProduct.stock} onValueChange={(e) => onInputNumberChange(e, 'stock')} mode="decimal" />
+                    </div>
+                    <div className="field col">
+                        <label htmlFor="pages" className="font-bold">
+                            Pages
+                        </label>
+                        <InputNumber id="pages" value = {(dialogType === 'add') ? product.pageCount : modifiedProduct.pageCount} onValueChange={(e) => onInputNumberChange(e, 'pageCount')} />
+                    </div>
+                    <div className="field col">
+                        <label labelFor="buttondisplay" class="font-bold block mb-2">
+                            Published
+                        </label>
+                        <Calendar id="buttondisplay" value = {(dialogType === 'add') ? (product.publishedDate) : convertirFormatoFecha(modifiedProduct.publishedDate)} onChange={(e) => onDateChange(e, 'publishedDate')} showIcon />
+                        
+                    
+                    </div>
                 </div>
-                <div className="field col">
-                    <label htmlFor="author" className="font-bold">
-                        Author
-                    </label>
-                    <InputText id="author" value={product.author} onChange={(e) => onInputChange(e, 'author')} />
+                <div className="formgrid grid">
+                    <div className="field col">
+                        <label htmlFor="title" className="font-bold">
+                            Category
+                        </label>
+                        <InputText id="category"  value = {(dialogType === 'add') ? product.categories : modifiedProduct.categories} placeholder= "Category 1, Category 2" onChange={(e) => onInputArrayChange(e, 'categories')} />
+                    </div>
+                    <div className="field col">
+                    
+                    </div>
+                    <div className="field col">
+                    
+                    </div>
+                
                 </div>
-            </div>
-            <div className="formgrid grid">
-                <div className="field col">
-                    <label htmlFor="stock" className="font-bold">
-                        Stock
+                <div className="field">
+                    <label htmlFor="description" className="font-bold">
+                        Short Description
                     </label>
-                    <InputNumber id="stock" value={product.stock} onValueChange={(e) => onInputNumberChange(e, 'stock')} mode="decimal" />
+                    <InputTextarea id="description"  value = {(dialogType === 'add') ? product.shortDescription : modifiedProduct.shortDescription} placeholder= "Short Description" onChange={(e) => onInputChange(e, 'shortDescription')} required rows={3} cols={20} />
                 </div>
-                <div className="field col">
-                    <label htmlFor="pages" className="font-bold">
-                        Pages
-                    </label>
-                    <InputNumber id="pages" value={product.pageCount} onValueChange={(e) => onInputNumberChange(e, 'pageCount')} />
-                </div>
-                <div className="field col">
-                    <label labelFor="buttondisplay" class="font-bold block mb-2">
-                        Published
-                    </label>
-                    <Calendar id="buttondisplay" value={product.publishedDate} onChange={(e) => onDateChange(e, 'publishedDate')} showIcon />
+            </Dialog>
 
-                    {/* <InputNumber id="quantity" value={product.quantity} onValueChange={(e) => onInputNumberChange(e, 'quantity')} /> */}
+            <Dialog visible={modifyProductDialog} style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header="Error" modal onHide={hideModifyProductsDialog}>
+                <div className="confirmation-content">
+                    <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+                    {product && (
+                        <span>
+                           You can not edit more than one product at a time. 
+                        </span>
+                    )}
                 </div>
-            </div>
-            <div className="formgrid grid">
-                <div className="field col">
-                    <label htmlFor="title" className="font-bold">
-                        Category
-                    </label>
-                    <InputText id="category" value={product.categories} onChange={(e) => onInputChange(e, 'title')} />
-                </div>
-                <div className="field col">
-                   
-                </div>
-                <div className="field col">
-                   
-                   </div>
-              
-            </div>
-            <div className="field">
-                <label htmlFor="description" className="font-bold">
-                    Short Description
-                </label>
-                <InputTextarea id="description" value={product.description} onChange={(e) => onInputChange(e, 'description')} required rows={3} cols={20} />
-            </div>
-            {/* <div className="field">
-                <label htmlFor="name" className="font-bold">
-                    Title
-                </label>
-                <InputText id="name" value={product.title} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !product.title })} />
-                {submitted && !product.title && <small className="p-error">Title is required.</small>}
-            </div> */}
             </Dialog>
 
             <Dialog visible={deleteProductsDialog} style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header="Confirm" modal footer={deleteProductsDialogFooter} onHide={hideDeleteProductsDialog}>
@@ -392,6 +428,5 @@ export const FileTable = ( data ) => {
             </Dialog>
         </div>
     );
-    
 }
         

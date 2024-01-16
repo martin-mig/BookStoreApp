@@ -7,9 +7,9 @@ const BookSchema = Schema({
     isbn: String,
     pageCount: Number,
     publishedDate: Date,
+    stock: Number,
     shortDescription: String,
     status: String,
-    stock: Number,
     authors: Array,
     categories: Array,
 });
