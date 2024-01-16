@@ -11,43 +11,30 @@ const conseguirUsuarios = async (req,res) => {
     return res.end();
 }
 
+const editBook = async (req,res) => {
+  const modybook = req.body;
+  
+  console.log("dato a modificar", modybook);
+
+  //const res = await bookModel.updateOne({ _id: 'Jean-Luc Picard' }, { ship: 'USS Enterprise' });
+ /* const rest = await bookModel.updateOne({_id:req.body._id} ,{$set:{title:req.body.title, isbn: req.boody.isbn, pageCount: req.body.pageCount,
+                                          publishedDate: req.body.publishedDate, shortDescription: req.bosy.shortDescription, status: req.body.status,
+                                          authors: req.body.authors, categories: req.body.categories, stock: req.body.stock }});
+   */
+  const rest =  await bookModel.updateOne({_id:req.body._id} ,{$set:modybook});
+                                        
+}
+
 const agregarLibro = async (req,res) => {
     const book = req.body;
-    console.log("datos del cliente " + JSON.stringify(book));
-    const bookdb = book;//JSON.stringify(book)
-    //const resultado = await book.insertOne(JSON.stringify(req.body));
-    let newBook = {
-      title: bookdb.title,
-      isbn : bookdb.isbn,
-      pageCount: bookdb.pageCount,
-      publishedDate: bookdb.publishedDate,
-      shortDescription: bookdb.shortDescription,
-      status: bookdb.status,
-      authors: [bookdb.authors],
-      categories: [bookdb.categories],
-      stock: bookdb.stock,
-  };
-  console.log("newBook: " + JSON.stringify(newBook));
-  bookModel.create(newBook)
+  bookModel.create(book)
   .then((documentoGuardado) => {
     console.log('Libro guardado con éxito:', documentoGuardado);
   })
   .catch((error) => {
     console.error('Error al guardar el libro:', error);
   });
-    // await bookModel.insertOne({
-    //     title: bookdb.title,
-    //     isbn : bookdb.isbn,
-    //     pageCount: bookdb.pageCount,
-    //     publishedDate: bookdb.publishedDate,
-    //     shortDescription: bookdb.shortDescription,
-    //     status: bookdb.status,
-    //     authors: [bookdb.authors],
-    //     categories: [bookdb.categories],
-    //     stock: bookdb.stock,
-    // });
-
-
+  
 }
 
 const conseguirLibros = async (req,res) => {
@@ -55,7 +42,7 @@ const conseguirLibros = async (req,res) => {
     const books = req.body; // Accede a los datos enviados desde el cliente
 
   // Haz lo que necesites hacer con los datos 'books' aquí
-    console.log("Datos recibidos del cliente:", books);
+   // console.log("Datos recibidos del cliente:", books);
 
     const query = {};
 
@@ -135,4 +122,5 @@ module.exports ={
     conseguirLibros,
     conseguirUsuarios,
     agregarLibro,
+    editBook,
 }
