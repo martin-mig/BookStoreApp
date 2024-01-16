@@ -60,7 +60,7 @@ export const useAjax = (url) => {
 
     const deleteData = async (requestData) => {
       try {
-        setDeleteLoading(true);
+        setLoading(true);
         console.log("CLIENT: esta es la url " + url);
         console.log("CLIENT: request data: ", requestData);
         const response = await fetch(url, {

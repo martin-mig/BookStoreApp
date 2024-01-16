@@ -139,6 +139,7 @@ export const FileTable = ( data ) => {
 
     const confirmDeleteSelected = () => {
         setDeleteProductsDialog(true);
+        SetAjaxUrl("http://localhost:3001/delete-books");
     };
 
     const leftToolbarTemplate = () => {
@@ -272,7 +273,7 @@ export const FileTable = ( data ) => {
     };
 
     const deleteSelectedProducts = async () => {
-        toast.current.show({ severity: 'info', summary: 'Sticky', detail: 'Message Content', sticky: true });
+        toast.current.show({ severity: 'info', summary: 'Sticky', detail: 'Esperando...', sticky: true });
         let _products = products.filter((val) => !selectedProducts.includes(val));
 
         await deleteData(selectedProducts);
@@ -282,7 +283,7 @@ export const FileTable = ( data ) => {
         setSelectedProducts(null);
         if(!loading){
             toast.current.clear();
-            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Products Deleted', life: 3000 });
+            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Libros Borrados', life: 3000 });
         }   
     };
 
