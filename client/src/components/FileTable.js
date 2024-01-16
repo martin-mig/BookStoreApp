@@ -16,12 +16,12 @@ import { classNames } from 'primereact/utils';
 import { Calendar } from 'primereact/calendar';
 import { Toast } from 'primereact/toast';
 import { usePostAjax } from '../hooks/usePostAjax';
-
+import { useDeleteAjax } from '../hooks/useDeleteAjax';
 
 export const FileTable = ( data ) => {
     
     let emptyProduct = {
-       id: null,
+       _id: null,
        title: '',
        isbn: '',
        pageCount: 0,
@@ -33,7 +33,9 @@ export const FileTable = ( data ) => {
 
     };
     const url = 'http://localhost:3001/add-book';
+    const urlDelete = 'http://localhost:3001/delete-books';
     const { databook , loading, error, postData } = usePostAjax(url);
+    const { deleteData , deleteLoading, deleteError, funcDeleteData } = useDeleteAjax(urlDelete);
 
     const initialData = data.data; // Reemplaza 'data.data' con tus datos reales
    
@@ -46,7 +48,7 @@ export const FileTable = ( data ) => {
     const [product, setProduct] = useState(emptyProduct);
 
     const [productDialog, setProductDialog] = useState(false);
-    const [deleteProductDialog, setDeleteProductDialog] = useState(false);
+
     const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
     const [selectedProducts, setSelectedProducts] = useState(null);
     const [submitted, setSubmitted] = useState(false);
@@ -56,7 +58,7 @@ export const FileTable = ( data ) => {
 
     useEffect(() => {
         setProducts(initialData);
-    }); 
+    }, [initialData]); 
 
     const allowExpansion = () => {
         return true;
@@ -250,6 +252,37 @@ export const FileTable = ( data ) => {
         return id;
     };
 
+    const hideDeleteProductsDialog = () => {
+        setDeleteProductsDialog(false);
+    };
+
+    const deleteSelectedProducts = async () => {
+        toast.current.show({ severity: 'info', summary: 'Sticky', detail: 'Message Content', sticky: true });
+        let _products = products.filter((val) => !selectedProducts.includes(val));
+        
+        console.log("productos a borrar: ", _products);
+        console.log("productos restantes:", products);
+        await funcDeleteData(selectedProducts);
+        
+        //deletedData es el/los objeto/s borrados
+        
+        setProducts(_products);
+        setDeleteProductsDialog(false);
+        setSelectedProducts(null);
+        if(!deleteLoading){
+            toast.current.clear();
+            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Products Deleted', life: 3000 });
+        }
+        
+    };
+
+    const deleteProductsDialogFooter = (
+        <React.Fragment>
+            <Button label="No" icon="pi pi-times" outlined onClick={hideDeleteProductsDialog} />
+            <Button label="Yes" icon="pi pi-check" severity="danger" onClick={deleteSelectedProducts} />
+        </React.Fragment>
+    );
+
     const productDialogFooter = (
         <React.Fragment>
             <Button label="Cancel" icon="pi pi-times" outlined onClick={hideDialog} />
@@ -349,6 +382,13 @@ export const FileTable = ( data ) => {
                 <InputText id="name" value={product.title} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !product.title })} />
                 {submitted && !product.title && <small className="p-error">Title is required.</small>}
             </div> */}
+            </Dialog>
+
+            <Dialog visible={deleteProductsDialog} style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header="Confirm" modal footer={deleteProductsDialogFooter} onHide={hideDeleteProductsDialog}>
+                <div className="confirmation-content">
+                    <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+                    {product && <span>Are you sure you want to delete the selected books?</span>}
+                </div>
             </Dialog>
         </div>
     );

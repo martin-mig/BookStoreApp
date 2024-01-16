@@ -1,17 +1,15 @@
-const {Schema, model} = require("mongoose");
+const mongoose = require ("mongoose");
+const {Schema, model} = mongoose;
 
 const BookSchema = Schema({
-    //_id: Number,
+    _id: mongoose.ObjectId,
     title: String,
     isbn: String,
     pageCount: Number,
     publishedDate: Date,
-    stock: Number,
-   // thumbnailUrl: String,
     shortDescription: String,
-
-    //longDescription: String,
     status: String,
+    stock: Number,
     authors: Array,
     categories: Array,
 });
