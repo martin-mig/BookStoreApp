@@ -4,120 +4,15 @@ import { Tag } from 'primereact/tag';
 import { Button } from 'primereact/button';
 import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
 import { Dropdown } from 'primereact/dropdown';
-
+import { useAjax } from '../../hooks/useAjax';
+import { Carrito } from './Carrito';
+import { Panel } from 'primereact/panel';
+import { Badge } from 'primereact/badge';
 
 export const VentasC = () => {
-    let product = [
-        {
-            "_id": {
-              "$oid": "65a4360e21abee8f5684da89"
-            },
-            "title": "Cien Años de Soledad",
-            "isbn": "193518217X",
-            "pageCount": 325,
-            "publishedDate": {
-              "$date": "2011-12-12T08:00:00.000Z"
-            },
-            "shortDescription": "Enterprise OSGi shows a Java developer how to develop to the OSGi Service Platform Enterprise specification, an emerging Java-based technology for developing modular enterprise applications. Enterprise OSGi addresses several shortcomings of existing enterprise platforms, such as allowing the creation of better maintainable and extensible applications, and provide a simpler, easier-to-use, light-weight solution to enterprise software development.",
-            "status": "PUBLISH",
-            "stock": 1,
-            "authors": [
-              "Alexandre de Castro Alves"
-            ],
-            "categories": 
-              "Novel"
-            ,
-            "rating": 5,
-            "price": 2,
-          },
-          {
-            "_id": {
-              "$oid": "65a4360e21abee8f5684da90"
-            },
-            "title": "Hello! Flex 4",
-            "isbn": "1933988762",
-            "pageCount": 258,
-            "publishedDate": {
-              "$date": "2009-11-01T07:00:00.000Z"
-            },
-            "shortDescription": "Hello! Flex 4 progresses through 26 self-contained examples selected so you can progressively master Flex. They vary from small one-page apps, to a 3D rotating haiku, to a Connect Four-like game. And in the last chapter you'll learn to build a full Flex application called SocialStalkr   a mashup that lets you follow your friends by showing their tweets on a Yahoo map.",
-            "status": "PUBLISH",
-            "stock": 10,
-            "authors": [
-              "Peter Armstrong"
-            ],
-            "categories": 
-              "Programming"
-            ,
-            "rating": 4,
-            "price": 2,
-          },
-          {
-            "_id": {
-              "$oid": "65a4360e21abee8f5684da91"
-            },
-            "title": "MongoDB in Action",
-            "isbn": "1935182870",
-            "pageCount": 0,
-            "publishedDate": {
-              "$date": "2011-12-12T08:00:00.000Z"
-            },
-            "shortDescription": "MongoDB In Action is a comprehensive guide to MongoDB for application developers. The book begins by explaining what makes MongoDB unique and describing its ideal use cases. A series of tutorials designed for MongoDB mastery then leads into detailed examples for leveraging MongoDB in e-commerce, social networking, analytics, and other common applications.",
-            "status": "PUBLISH",
-            "stock": 5,
-            "authors": [
-              "Kyle Banker"
-            ],
-            "categories": 
-              "Terror"
-            ,
-            "rating": 5,
-            "price": 2,
-          },
-          {
-            "_id": {
-              "$oid": "65a4360e21abee8f5684da92"
-            },
-            "title": "Libro de cocina",
-            "isbn": "1884777686",
-            "pageCount": 504,
-            "publishedDate": {
-              "$date": "1998-06-01T07:00:00.000Z"
-            },
-            "status": "PUBLISH",
-            "stock": 71,
-            "authors": [
-              "Michael J. Barlotta"
-            ],
-            "categories": 
-              "Cook"
-            ,
-            "rating": 3,
-            "price": 2,
-          },
-          {
-            "_id": {
-              "$oid": "65a4360e21abee8f5684da93"
-            },
-            "title": "Libro de Viaje",
-            "isbn": "1884777864",
-            "pageCount": 550,
-            "publishedDate": {
-              "$date": "1999-08-01T07:00:00.000Z"
-            },
-            "shortDescription": "Jaguar Development with PowerBuilder 7 is the definitive guide to distributed application development with PowerBuilder. It is the only book dedicated to preparing PowerBuilder developers for Jaguar applications and has been approved by Sybase engineers and product specialists who build the tools described in the book.",
-            "status": "PUBLISH",
-            "stock": 1,
-            "authors": [
-              "Michael Barlotta"
-            ],
-            "categories": [
-             "Travel"
-            ],
-            "rating": 4,
-            "price": 3,
-        }
-    ]
+   console.log("llega a ventas")
+    const [ajaxUrl, SetAjaxUrl] = useState("http://localhost:3001/search-books");
+    const { databook , loading, error, postData, putData, deleteData } = useAjax(ajaxUrl);
 
     const [products, setProducts] = useState([]);
     const [sortKey, setSortKey] = useState('');
@@ -127,13 +22,24 @@ export const VentasC = () => {
         { label: 'Price High to Low', value: '!price' },
         { label: 'Price Low to High', value: 'price' }
     ];
-   
 
-    useEffect(() => {
-       setProducts(product);
-   
+    const [carritoP, setCarritoP] = useState([]);
+    const [contador, setContador] = useState(0);
+    const [sumaPrecio, setSumaPrecio] = useState(0);
+
+    const getProducts = async() =>{
+        const response = await postData({});
+        setProducts(response);
+    }
+
+    useEffect( () => {
+        getProducts();
     }, []);
 
+    useEffect( () =>{
+        sumaTotal();
+    },[carritoP])
+ 
     const stockConvert = (value) => {
         let stockObj = {};
         if (value >= 50){
@@ -170,9 +76,59 @@ export const VentasC = () => {
         }
     };
      
-    const header = () => {
-        return <Dropdown options={sortOptions} value={sortKey} optionLabel="label" placeholder="Sort By Price" onChange={onSortChange} className="flex justify-start w-full sm:w-14rem" />;
+    const headerT = (options) => {
+        const className = `${options.className} justify-content-space-between`;
+        return (
+            <div className={className}>
+                <div className="flex align-items-center gap-2">
+                    <Dropdown options={sortOptions} value={sortKey} optionLabel="label" placeholder="Sort By Price" onChange={onSortChange} className="flex justify-start w-full sm:w-14rem" />
+                {/* <Button rounded text severity="success" aria-label="Search" icon="pi pi-shopping-cart"></Button>*/}
+                </div>
+                <div className="grid">
+                    <div class="col">
+                        <div class="text-center pb-3 pt-3">
+                        <strong>{(sumaPrecio != 0) ? ('Total: $' + sumaPrecio) : ''}</strong>
+                        </div>
+                    </div>
+                    <div class="col-fixed" style={{width:"100px"}}>
+                        <div class="text-center">
+                            <Button className='mr-8' type="button" rounded text severity="success"  outlined icon="pi pi-cart-plus" size="large">
+                                <Badge value={contador} severity="danger" ></Badge>
+                            </Button>   
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
     };
+
+
+    const btnCarrito = (title, price, imagen) =>{
+        console.log("boton carrito titulo", title);
+        console.log("boton carrito precio", price);
+
+        let carritoProd = {
+            titleProd: title,
+            priceProd: price,
+            imagenProd: imagen,
+            contadorProd: 1,
+        }
+       
+       setCarritoP([...carritoP, carritoProd]);
+       setContador(contador + 1);
+       //sumaTotal();
+    }
+
+    const sumaTotal = () => {
+        let _carritoP = [...carritoP];
+
+        let suma = 0; 
+        _carritoP.map((carr, index) => {
+            suma += carr.contadorProd * carr.priceProd;
+        })
+        
+        setSumaPrecio(suma);
+    }
 
     <h1>Pagina de Consulta de ventas</h1> 
     const itemTemplate = (product) => {
@@ -195,7 +151,7 @@ export const VentasC = () => {
                             </div>
                             <div className="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
                                 <span className="text-2xl font-semibold">${product.price}</span>
-                                <Button icon="pi pi-shopping-cart" className="p-button-rounded" disabled={product.inventoryStatus === 'OUTOFSTOCK'}></Button>
+                                <Button icon="pi pi-shopping-cart" className="p-button-rounded" onClick={()=>btnCarrito(product.title,product.price, product.categories)} disabled={product.inventoryStatus === 'OUTOFSTOCK'}></Button>
                             </div>
                         </div>
                     </div>
@@ -205,9 +161,15 @@ export const VentasC = () => {
         )
     }
     return (
-        <div className="card">
-            <DataView value={products} itemTemplate={itemTemplate} paginator rows={3} header={header()} sortField={sortField} sortOrder={sortOrder}/>
-        
-        </div>
+        <Panel headerTemplate={headerT} >
+            <div className='grid'>
+                <div className="col-9" >
+                    <DataView value={products} itemTemplate={itemTemplate} paginator rows={3} sortField={sortField} sortOrder={sortOrder}/>
+                </div>
+                <div className="col-3" style={{ marginTop: '30px' }}>
+                    <Carrito datoCarrito={carritoP} setdatoCarrito={setCarritoP}/>
+                </div>
+            </div>
+        </Panel>
     )
 }

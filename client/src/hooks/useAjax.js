@@ -25,6 +25,7 @@ export const useAjax = (url) => {
   
         const responseData = await response.json();
         setDataBook(responseData);
+        return responseData;
       } catch (error) {
         setError(error.message);
       } finally {

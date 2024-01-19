@@ -11,7 +11,9 @@ const BookSchema = Schema({
     shortDescription: String,
     status: String,
     authors: Array,
-    categories: Array,
+    categories: String,
+    rating: Number,
+    price: Number
 });
 
 module.exports = model("Book", BookSchema, "books"); 

@@ -228,5 +228,14 @@ table.dataTable td {
 }   
 .width100 {
   width: 60%
-  
+}
+
+.atg_store_cartQty p {
+    color: #fff;
+    font-weight: 600;
+    text-align: center;
+    font-size: 11px;
+    width: 19px;
+    margin: 0px auto;
+    padding-top: 2px;
 }

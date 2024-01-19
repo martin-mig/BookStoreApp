@@ -12,9 +12,10 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Calendar } from 'primereact/calendar';
 import { Toast } from 'primereact/toast';
 import { useAjax } from '../hooks/useAjax';
+import { Dropdown } from 'primereact/dropdown';
 
 export const FileTable = ( data ) => {
-    
+    console.log("llega a book")
     let emptyProduct = {
        _id: null,
        title: '',
@@ -24,9 +25,22 @@ export const FileTable = ( data ) => {
        shortDescription: '',
        status: '',
        authors: [],
-       categories: [],
+       categories: '' ,
+       rating: 0,
+       price: 0
 
     };
+
+    const categoryProduct = [
+        "Programming",
+        "Novel",
+        "Travel",
+        "Cook",
+        "Education",
+        "Health",
+        "Terror",
+        "Miscellaneous"
+    ];
 
     const [ajaxUrl, SetAjaxUrl] = useState("");
     const { databook , loading, error, postData, putData, deleteData } = useAjax(ajaxUrl);
@@ -45,7 +59,7 @@ export const FileTable = ( data ) => {
     const [selectedProducts, setSelectedProducts] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
-
+  
     const [dialogType, setDialogType] = useState(null);
     const [modifiedProduct, setModifiedProduct] = useState({})
 
@@ -73,10 +87,13 @@ export const FileTable = ( data ) => {
                         <strong>Page Count :</strong>  {data.pageCount}
                     </li>
                     <li>
-                        <strong>Categories :</strong>  {data.categories.join(', ')}
+                        <strong>Categories :</strong>  {data.categories}
                     </li>
                     <li>
                         <strong>Published :</strong>  {(new Date(data.publishedDate)).toLocaleDateString('en-US')}
+                    </li>
+                    <li>
+                        <strong>Price :</strong>  {data.price}
                     </li>
                 </ul>    
             </div>
@@ -170,7 +187,7 @@ export const FileTable = ( data ) => {
 
         if (dialogType === 'modify'){
             let _modifiedProduct = { ...modifiedProduct };
-
+            console.log("name: " + name + "valor: " + val);
             _modifiedProduct[`${name}`] = val;
     
             setModifiedProduct(_modifiedProduct);
@@ -191,14 +208,14 @@ export const FileTable = ( data ) => {
         if(dialogType === 'modify'){
             let _modifiedProduct = {...modifiedProduct};
 
-            _modifiedProduct[name] = val.split(',').map(author => author.trim());
+            _modifiedProduct[name] = val.split(',');
 
             setModifiedProduct(_modifiedProduct);
         }
         else{
             let _product = { ...product };
 
-            _product[name] = val.split(',').map(author => author.trim());
+            _product[name] = val.split(',');
         
             setProduct(_product);
         }
@@ -254,7 +271,6 @@ export const FileTable = ( data ) => {
 
             console.log("AjaxURL " + ajaxUrl)
             postData(product);
-            //chequear databook o error
             setProducts(_products);
         }else
         {
@@ -383,22 +399,27 @@ export const FileTable = ( data ) => {
                             Published
                         </label>
                         <Calendar id="buttondisplay" value = {(dialogType === 'add') ? (product.publishedDate) : convertirFormatoFecha(modifiedProduct.publishedDate)} onChange={(e) => onDateChange(e, 'publishedDate')} showIcon />
-                        
-                    
                     </div>
                 </div>
                 <div className="formgrid grid">
                     <div className="field col">
-                        <label htmlFor="title" className="font-bold">
+                        <label labelFor="categories" className="font-bold">
                             Category
                         </label>
-                        <InputText id="category"  value = {(dialogType === 'add') ? product.categories : modifiedProduct.categories} placeholder= "Category 1, Category 2" onChange={(e) => onInputArrayChange(e, 'categories')} />
+                        <Dropdown id="categories" value={(dialogType === 'add') ? (product.categories) : (modifiedProduct.categories)} onChange={(e) => onInputChange(e, 'categories')} options={categoryProduct} 
+                        placeholder= "Select a Category" />
                     </div>
                     <div className="field col">
-                    
+                        <label htmlFor="price" className="font-bold">
+                            Price
+                        </label>
+                        <InputNumber id="price" value = {(dialogType === 'add') ? product.price : modifiedProduct.price} onValueChange={(e) => onInputNumberChange(e, 'price')} mode="decimal" />
                     </div>
                     <div className="field col">
-                    
+                        <label htmlFor="rating" className="font-bold">
+                            Rating
+                        </label>
+                        <InputNumber id="rating" value = {(dialogType === 'add') ? product.rating : modifiedProduct.rating} onValueChange={(e) => onInputNumberChange(e, 'rating')} mode="decimal" />
                     </div>
                 
                 </div>
