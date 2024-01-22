@@ -1,4 +1,4 @@
-import React , { useState, useEffect } from 'react'
+import React , { useState, useEffect, useId, useRef } from 'react'
 import { Rating } from 'primereact/rating';
 import { Tag } from 'primereact/tag';
 import { Button } from 'primereact/button';
@@ -8,9 +8,9 @@ import { useAjax } from '../../hooks/useAjax';
 import { Carrito } from './Carrito';
 import { Panel } from 'primereact/panel';
 import { Badge } from 'primereact/badge';
+import { Toast } from 'primereact/toast';
 
 export const VentasC = () => {
-   console.log("llega a ventas")
     const [ajaxUrl, SetAjaxUrl] = useState("http://localhost:3001/search-books");
     const { databook , loading, error, postData, putData, deleteData } = useAjax(ajaxUrl);
 
@@ -40,6 +40,8 @@ export const VentasC = () => {
         sumaTotal();
     },[carritoP])
  
+    const toast = useRef(null);
+
     const stockConvert = (value) => {
         let stockObj = {};
         if (value >= 50){
@@ -92,7 +94,7 @@ export const VentasC = () => {
                     </div>
                     <div class="col-fixed" style={{width:"100px"}}>
                         <div class="text-center">
-                            <Button className='mr-8' type="button" rounded text severity="success"  outlined icon="pi pi-cart-plus" size="large">
+                            <Button  className='mr-8' type="button" rounded text severity="success"  outlined icon="pi pi-cart-plus" size="large">
                                 <Badge value={contador} severity="danger" ></Badge>
                             </Button>   
                         </div>
@@ -102,20 +104,47 @@ export const VentasC = () => {
         )
     };
 
+    const showSticky = () => {
+        toast.current.show({ severity: 'info', summary: 'Sticky', detail: 'Message Content', sticky: true });
+    };
 
-    const btnCarrito = (title, price, imagen) =>{
-        console.log("boton carrito titulo", title);
-        console.log("boton carrito precio", price);
+    const btnCarrito = (item) =>{
+    console.log("El stock que tengo " ,item.stock);    
 
+    let _carritoP = [...carritoP];
+    let indexCarrito = _carritoP.findIndex((ele) => {
+        return (ele.idProd == item._id);
+    })
+
+      if (indexCarrito != -1)//si ya existe
+      {
+        if(item.stock >= _carritoP[indexCarrito].contadorProd + 1){
+            _carritoP[indexCarrito].contadorProd++;
+            setCarritoP(_carritoP);
+        }
+        else{
+            showSticky();
+        }
+      }
+      else{ //carrito nuevo
         let carritoProd = {
-            titleProd: title,
-            priceProd: price,
-            imagenProd: imagen,
+            idProd: item._id,
+            titleProd: item.title,
+            priceProd: item.price,
+            imagenProd: item.categories,
+            stockProd: item.stock,
             contadorProd: 1,
         }
-       
-       setCarritoP([...carritoP, carritoProd]);
-       setContador(contador + 1);
+
+        if (item.stock >= 0){
+            setCarritoP([...carritoP, carritoProd]);
+            setContador(contador + 1);
+        }
+        else{
+            showSticky();
+        }
+      }
+       //e.target.disabled = true;
        //sumaTotal();
     }
 
@@ -133,43 +162,46 @@ export const VentasC = () => {
     <h1>Pagina de Consulta de ventas</h1> 
     const itemTemplate = (product) => {
         return(
-            <>    
-                <div className="col-12">
-                    <div className="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
-                    <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"  src={require('../../images/' + product.categories + '.png')} />
-                        <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
-                            <div className="flex flex-column align-items-center sm:align-items-start gap-3">
-                                <div className="text-2xl font-bold text-900">{product.title}</div>
-                                <Rating value={product.rating} readOnly cancel={false}></Rating>
-                                <div className="flex align-items-center gap-3">
-                                    <span className="flex align-items-center gap-2">
-                                        <i className="pi pi-tag"></i>
-                                        <span className="font-semibold">{product.categories}</span>
-                                    </span>
-                                    {stockBodyTemplate(product)}
+            <>     
+                    <div className="col-12">
+                        <div className="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
+                        <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"  src={require('../../images/' + product.categories + '.png')} />
+                            <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
+                                <div className="flex flex-column align-items-center sm:align-items-start gap-3">
+                                    <div className="text-2xl font-bold text-900">{product.title}</div>
+                                    <Rating value={product.rating} readOnly cancel={false}></Rating>
+                                    <div className="flex align-items-center gap-3">
+                                        <span className="flex align-items-center gap-2">
+                                            <i className="pi pi-tag"></i>
+                                            <span className="font-semibold">{product.categories}</span>
+                                        </span>
+                                        {stockBodyTemplate(product)}
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
-                                <span className="text-2xl font-semibold">${product.price}</span>
-                                <Button icon="pi pi-shopping-cart" className="p-button-rounded" onClick={()=>btnCarrito(product.title,product.price, product.categories)} disabled={product.inventoryStatus === 'OUTOFSTOCK'}></Button>
+                                <div className="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
+                                    <span className="text-2xl font-semibold">${product.price}</span>
+                                    <Button icon="pi pi-shopping-cart" className="p-button-rounded"  onClick={()=> btnCarrito(product)} ></Button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
+                
             </>
         )
     }
     return (
-        <Panel headerTemplate={headerT} >
-            <div className='grid'>
-                <div className="col-9" >
-                    <DataView value={products} itemTemplate={itemTemplate} paginator rows={3} sortField={sortField} sortOrder={sortOrder}/>
+        <div>
+            <Toast ref={toast} />
+            <Panel headerTemplate={headerT} >
+                <div className='grid'>
+                    <div className="col-9" >
+                        <DataView value={products} itemTemplate={itemTemplate} paginator rows={3} sortField={sortField} sortOrder={sortOrder}/>
+                    </div>
+                    <div className="col-3" style={{ marginTop: '30px' }}>
+                        <Carrito datoCarrito={carritoP} setdatoCarrito={setCarritoP} contadorBadger={contador} setBadgerContador={setContador}/>
+                    </div>
                 </div>
-                <div className="col-3" style={{ marginTop: '30px' }}>
-                    <Carrito datoCarrito={carritoP} setdatoCarrito={setCarritoP}/>
-                </div>
-            </div>
-        </Panel>
+            </Panel>
+        </div>
     )
 }

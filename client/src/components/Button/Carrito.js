@@ -5,11 +5,9 @@ import { Menu } from 'primereact/menu';
 import { Avatar } from 'primereact/avatar';
 import { InputNumber } from 'primereact/inputnumber';
 import { Card } from 'primereact/card';
+import { Toast } from 'primereact/toast';
 
-
-export const Carrito = ({datoCarrito, setdatoCarrito}) =>{
-
-    console.log("contador carrito",datoCarrito.contadorProd);
+export const Carrito = ({datoCarrito, setdatoCarrito, contadorBadger, setBadgerContador}) =>{
     /*console.log(datoCarrito.titleProd);
     console.log(props.datoCarrito.priceProd);
     console.log(props.datoCarrito.imagenProd);
@@ -18,9 +16,11 @@ export const Carrito = ({datoCarrito, setdatoCarrito}) =>{
     const [titulo, setTitulo] = useState("");
     const [price, setPrice] = useState("");
     const [imagen, setImagen] = useState("");
+    
    // const [contador, setContador] = useState(1);
     
-    const idCarrito = useId();
+    //const idCarrito = useId();
+    const toast = useRef(null);
     // useEffect(() => {
 
     //     // setTitulo(props.datoCarrito.titleProd);
@@ -52,13 +52,18 @@ export const Carrito = ({datoCarrito, setdatoCarrito}) =>{
         }
     ];
 
-    const deleteSelectedCarrito = (key) => {
+    const showSticky = () => {
+        toast.current.show({ severity: 'info', summary: 'Sticky', detail: 'Message Content', sticky: true });
+    };
+
+    const deleteSelectedCarrito = (id) => {
         //console.log("target", e)
-        let _datoCarrito = datoCarrito.filter((ele, index) => {
-           if (index!=key.index) return ele;
+        let _datoCarrito = datoCarrito.filter((ele) => {
+           if (ele.idProd!=id) return ele;
         });
         
         setdatoCarrito(_datoCarrito);
+        setBadgerContador(contadorBadger - 1);
     }
 
     const headerTemplate = (options) => {
@@ -81,27 +86,39 @@ export const Carrito = ({datoCarrito, setdatoCarrito}) =>{
         );
     };
 
-    const changeContadorProd = (key, value) => {
+    const changeContadorProd = (id, value) => {
         let _datoCarrito = [...datoCarrito];
-        console.log("datoCarrito local ", _datoCarrito[0]);
+                
+        let indexCarrito = _datoCarrito.findIndex((ele) => {
+            return ele.idProd == id;
+        })
 
-        
-        _datoCarrito[key.index].contadorProd = value;
+        console.log("valor de value " , value);
+        console.log("valor contadorProd ", _datoCarrito[indexCarrito].contadorProd);
+        console.log("valor de stock", _datoCarrito[indexCarrito].stockProd);
 
-        setdatoCarrito(_datoCarrito);
+        if(_datoCarrito[indexCarrito].stockProd >= _datoCarrito[indexCarrito].contadorProd+1){
+            _datoCarrito[indexCarrito].contadorProd = value;
+            setdatoCarrito(_datoCarrito);
+        }
+        else{
+            showSticky();
+        }
     }
     
-    const footerTemplate = (key, book) => {
-        console.log("llega al book", book);
+    const footerTemplate = (book) => {
+       // console.log("llega al book", book);
+       const classButtonDisabled = "p-button-primary p-disabled";
+       const classButtonEnabled = "p-button-primary";
 
         return (
             <div className="flex flex-wrap align-items-center justify-content-between gap-3">
                 <div className="flex align-items-center gap-2">     
-                    <InputNumber min={1} value={book.contadorProd} showButtons buttonLayout="horizontal" size="1"
-                        decrementButtonClassName="p-button-primary" incrementButtonClassName="p-button-primary" incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus"  inputStyle={{ textAlign: "center" }} 
-                        onValueChange={(e) => changeContadorProd(key, e.value)}   />
+                    <InputNumber min={1} max={book.stockProd} value={book.contadorProd} showButtons buttonLayout="horizontal" size="1"
+                        decrementButtonClassName={(book.contadorProd == 1) ? classButtonDisabled : classButtonEnabled} incrementButtonClassName="p-button-primary" incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus"  inputStyle={{ textAlign: "center" }} 
+                        onValueChange={(e) => changeContadorProd(book.idProd, e.value)}   />
                 </div>
-                <Button icon="pi pi-trash" severity="secondary" rounded outlined text onClick={() => deleteSelectedCarrito(key)}></Button>
+                <Button icon="pi pi-trash" severity="secondary" rounded outlined text onClick={() => deleteSelectedCarrito(book.idProd)}></Button>
                  
             </div>
         );
@@ -109,11 +126,12 @@ export const Carrito = ({datoCarrito, setdatoCarrito}) =>{
 
     return(
         <>
+            <Toast ref={toast} />
             <Panel headerTemplate={headerTemplate}  toggleable>
                 {
                     (datoCarrito.length > 0) ?
                     (datoCarrito.map((book, index) => (  
-                        <Card key={index} footer = {footerTemplate({index},book)}  >
+                        <Card key={index} footer = {footerTemplate(book)}  >
                             <div className='grid nested-grid'>
                                 <div class="col-4 flex align-items-center">
                                         {book.imagenProd ? (<img  className="w-full" src={require('../../images/' + book.imagenProd + '.png')} style={{display: "flex", objectFit:"contain"}}/>) : null}
