@@ -135,7 +135,7 @@ export const FileTable = ( data ) => {
         setSubmitted(false);
         setProductDialog(true);
         setDialogType('add');
-        SetAjaxUrl('http://localhost:3001/add-book');
+        SetAjaxUrl('http://localhost:3002/add-book');
     };
 
     const modifySelected = () =>{
@@ -146,7 +146,7 @@ export const FileTable = ( data ) => {
             setProductDialog(true); 
             setDialogType('modify');
             setModifiedProduct(selectedProducts[0]);
-            SetAjaxUrl('http://localhost:3001/edit-book');
+            SetAjaxUrl('http://localhost:3002/edit-book');
         }
     }
 
@@ -156,7 +156,7 @@ export const FileTable = ( data ) => {
 
     const confirmDeleteSelected = () => {
         setDeleteProductsDialog(true);
-        SetAjaxUrl("http://localhost:3001/delete-books");
+        SetAjaxUrl("http://localhost:3002/delete-books");
     };
 
     const leftToolbarTemplate = () => {

@@ -9,9 +9,10 @@ import { Carrito } from './Carrito';
 import { Panel } from 'primereact/panel';
 import { Badge } from 'primereact/badge';
 import { Toast } from 'primereact/toast';
+import { useNavigate } from 'react-router-dom';
 
 export const VentasC = () => {
-    const [ajaxUrl, SetAjaxUrl] = useState("http://localhost:3001/search-books");
+    const [ajaxUrl, SetAjaxUrl] = useState("http://localhost:3002/search-books");
     const { databook , loading, error, postData, putData, deleteData } = useAjax(ajaxUrl);
 
     const [products, setProducts] = useState([]);
@@ -27,6 +28,7 @@ export const VentasC = () => {
     const [contador, setContador] = useState(0);
     const [sumaPrecio, setSumaPrecio] = useState(0);
 
+
     const getProducts = async() =>{
         const response = await postData({});
         setProducts(response);
@@ -41,6 +43,8 @@ export const VentasC = () => {
     },[carritoP])
  
     const toast = useRef(null);
+
+    const navigate = useNavigate();
 
     const stockConvert = (value) => {
         let stockObj = {};
@@ -77,7 +81,11 @@ export const VentasC = () => {
             setSortKey(value);
         }
     };
-     
+    const finalizarCompra = (sumaPrecio,carritoP) => {
+       // navigate('/consultas/finalizar-compra');
+        navigate('/consultas/finalizar-compra', { state: { sumaPrecio,carritoP} });
+    } 
+
     const headerT = (options) => {
         const className = `${options.className} justify-content-space-between`;
         return (
@@ -94,7 +102,7 @@ export const VentasC = () => {
                     </div>
                     <div class="col-fixed" style={{width:"100px"}}>
                         <div class="text-center">
-                            <Button  className='mr-8' type="button" rounded text severity="success"  outlined icon="pi pi-cart-plus" size="large">
+                            <Button  className='mr-8' type="button" rounded text severity="success" onClick={()=>finalizarCompra(sumaPrecio,carritoP)} outlined icon="pi pi-cart-plus" size="large">
                                 <Badge value={contador} severity="danger" ></Badge>
                             </Button>   
                         </div>

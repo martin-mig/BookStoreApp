@@ -16,6 +16,7 @@ import { ClientesC } from '../components/Button/ClientesC';
 import { VentasC } from '../components/Button/VentasC'; 
 import { UsuariosC } from '../components/Button/UsuariosC'; 
 import { DescargaC } from '../components/Button/DescargaC';
+import { FinalizarCompra } from '../components/Button/FinalizarCompra';
 
 export const RouterPrincipal = () => {
     return (
@@ -33,6 +34,7 @@ export const RouterPrincipal = () => {
                             <Route path="clientesc" element={<ClientesC />} />
                             <Route path="ventasc" element={<VentasC />} />
                             <Route path="descargasc" element={<DescargaC />} />
+                            <Route path="finalizar-compra" element={<FinalizarCompra />} />
                         </Route>
                         <Route path="/stock" element={<Stock />} />
                         <Route path="/venta" element={<Venta />} />
