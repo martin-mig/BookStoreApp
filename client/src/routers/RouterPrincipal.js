@@ -24,7 +24,7 @@ export const RouterPrincipal = () => {
             <div>
                 <Header></Header>
                 <Inicio></Inicio>
-                <section>
+                <section className='mb-4'>
                     <Routes>
                         <Route path="/" element={<Navigate to="/consultas" />} />
                         <Route path="/consultas/*" element={<Consultas />}>

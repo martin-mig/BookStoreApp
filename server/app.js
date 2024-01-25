@@ -9,7 +9,7 @@ const bodyparser = require('body-parser');
 
 
 app.listen(PUERTO)
-console.log('Server on port 3001');
+console.log('Server on port ' + PUERTO);
 
 //app.use(express.static('public'));
 

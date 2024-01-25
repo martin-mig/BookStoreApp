@@ -13,6 +13,8 @@ export const Carrito = ({datoCarrito, setdatoCarrito, contadorBadger, setBadgerC
     console.log(props.datoCarrito.imagenProd);
 */
     //console.log(props.datoCarrito[0].titleProd);
+   console.log("Storage2" , localStorage.getItem('products'));  
+
     const [titulo, setTitulo] = useState("");
     const [price, setPrice] = useState("");
     const [imagen, setImagen] = useState("");
@@ -21,17 +23,17 @@ export const Carrito = ({datoCarrito, setdatoCarrito, contadorBadger, setBadgerC
     
     //const idCarrito = useId();
     const toast = useRef(null);
-    // useEffect(() => {
-
-    //     // setTitulo(props.datoCarrito.titleProd);
-    //     // setPrice(props.datoCarrito.priceProd);
-    //     // setImagen(props.datoCarrito.imagenProd)
-    //     if (datoCarrito.length > 1){
-    //         datoCarrito.unshift();
-    //     }
-
-    // },[datoCarrito]);
+    const inputRef = useRef(null);
+ 
     
+    useEffect(() => {
+        if (!(localStorage.getItem('products') === null)) {
+            const datosGuardadosString = localStorage.getItem('products');
+            const datosGuardados = JSON.parse(datosGuardadosString);
+            setdatoCarrito(datosGuardados);
+        }
+    
+    },[]);
 
     const configMenu = useRef(null);
     const items = [
@@ -52,18 +54,19 @@ export const Carrito = ({datoCarrito, setdatoCarrito, contadorBadger, setBadgerC
         }
     ];
 
-    const showSticky = () => {
-        toast.current.show({ severity: 'info', summary: 'Sticky', detail: 'Message Content', sticky: true });
+    const showSticky = (stock) => {
+        toast.current.show({ severity: 'info', summary: 'Advertencia', detail: 'No puede comprar mas del stock actual del producto que es igual a '+ stock , sticky: true });
     };
 
     const deleteSelectedCarrito = (id) => {
-        //console.log("target", e)
+        let productAlmacenados = JSON.parse(localStorage.getItem('products'));
         let _datoCarrito = datoCarrito.filter((ele) => {
            if (ele.idProd!=id) return ele;
         });
         
         setdatoCarrito(_datoCarrito);
         setBadgerContador(contadorBadger - 1);
+        localStorage.setItem('products', JSON.stringify(_datoCarrito));
     }
 
     const headerTemplate = (options) => {
@@ -77,17 +80,31 @@ export const Carrito = ({datoCarrito, setdatoCarrito, contadorBadger, setBadgerC
                 </div>
                 <div>
                     <Menu model={items} popup ref={configMenu} id="config_menu" />
-                    <button className="p-panel-header-icon p-link mr-2" onClick={(e) => configMenu?.current?.toggle(e)}>
-                        <span className="pi pi-cog"></span>
-                    </button>
                     {options.togglerElement}
                 </div>
             </div>
         );
     };
 
-    const changeContadorProd = (id, value) => {
+    const changeContadorProd = (id, value, stock) => {
+        
         let _datoCarrito = [...datoCarrito];
+        let indexCarrito = _datoCarrito.findIndex((ele) => {
+            return ele.idProd == id;
+        })
+
+        console.log("value", value)
+        console.log("stock", stock)
+        if(value > stock){
+            showSticky(stock);
+            _datoCarrito[indexCarrito].contadorProd = stock+1;
+            console.log("_dato Carrti " ,_datoCarrito[indexCarrito].contadorProd )
+            setdatoCarrito(_datoCarrito);
+            _datoCarrito[indexCarrito].contadorProd = stock;
+            setdatoCarrito(_datoCarrito);
+        }
+
+      /*  let _datoCarrito = [...datoCarrito];
                 
         let indexCarrito = _datoCarrito.findIndex((ele) => {
             return ele.idProd == id;
@@ -102,10 +119,51 @@ export const Carrito = ({datoCarrito, setdatoCarrito, contadorBadger, setBadgerC
             setdatoCarrito(_datoCarrito);
         }
         else{
-            showSticky();
+            showSticky(stock);
+        }
+        */
+    }
+
+    const restarProd = (id,value,stock) =>{
+        let _datoCarrito = [...datoCarrito];
+                
+        let indexCarrito = _datoCarrito.findIndex((ele) => {
+            return ele.idProd == id;
+        })
+
+        console.log("valor de value " , value);
+        console.log("valor contadorProd ", _datoCarrito[indexCarrito].contadorProd);
+        console.log("valor de stock", _datoCarrito[indexCarrito].stockProd);
+
+        if (_datoCarrito[indexCarrito].contadorProd > 1){
+            _datoCarrito[indexCarrito].contadorProd--;
+            setdatoCarrito(_datoCarrito);
+        }
+    }
+
+    const sumarProd = (id,value,stock) =>{
+        let _datoCarrito = [...datoCarrito];
+        let productAlmacenados = JSON.parse(localStorage.getItem('products'));
+                
+        let indexCarrito = _datoCarrito.findIndex((ele) => {
+            return ele.idProd == id;
+        })
+
+        console.log("valor de value " , value);
+        console.log("valor contadorProd ", _datoCarrito[indexCarrito].contadorProd);
+        console.log("valor de stock", _datoCarrito[indexCarrito].stockProd);
+
+        if(_datoCarrito[indexCarrito].contadorProd + 1 <= _datoCarrito[indexCarrito].stockProd){
+            _datoCarrito[indexCarrito].contadorProd++;
+            setdatoCarrito(_datoCarrito);
+            localStorage.setItem('products', JSON.stringify(_datoCarrito));
+        }
+        else{
+            showSticky(stock);
         }
     }
     
+
     const footerTemplate = (book) => {
        // console.log("llega al book", book);
        const classButtonDisabled = "p-button-primary p-disabled";
@@ -114,9 +172,17 @@ export const Carrito = ({datoCarrito, setdatoCarrito, contadorBadger, setBadgerC
         return (
             <div className="flex flex-wrap align-items-center justify-content-between gap-3">
                 <div className="flex align-items-center gap-2">     
-                    <InputNumber min={1} max={book.stockProd} value={book.contadorProd} showButtons buttonLayout="horizontal" size="1"
+                   {/* <InputNumber min={1} max={book.stockProd} value={book.contadorProd} showButtons buttonLayout="horizontal" size="1"
                         decrementButtonClassName={(book.contadorProd == 1) ? classButtonDisabled : classButtonEnabled} incrementButtonClassName="p-button-primary" incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus"  inputStyle={{ textAlign: "center" }} 
-                        onValueChange={(e) => changeContadorProd(book.idProd, e.value)}   />
+                        onValueChange={(e) => changeContadorProd(book.idProd, e.value, book.stockProd)}   />
+                    */}
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <Button icon="pi pi-minus" rounded text onClick={() => restarProd(book.idProd,book.contadorProd,book.stockProd)}
+                        className={(book.contadorProd == 1) ? classButtonDisabled : classButtonEnabled}/>
+						{/*<InputNumber size="1" min={1} value={book.contadorProd} onValueChange={(e) => changeContadorProd(book.idProd, e.value, book.stockProd)} inputStyle={{ textAlign: "center" }}></InputNumber>*/}
+						<span className='px-3'>{book.contadorProd}</span>
+                        <Button icon="pi pi-plus" rounded text onClick={() => sumarProd(book.idProd,book.contadorProd,book.stockProd)}/>
+                    </div>
                 </div>
                 <Button icon="pi pi-trash" severity="secondary" rounded outlined text onClick={() => deleteSelectedCarrito(book.idProd)}></Button>
                  

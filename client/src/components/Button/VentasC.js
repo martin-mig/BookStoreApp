@@ -28,6 +28,7 @@ export const VentasC = () => {
     const [contador, setContador] = useState(0);
     const [sumaPrecio, setSumaPrecio] = useState(0);
 
+   // const [productoStorage, setProductoStorage] = useState([]);
 
     const getProducts = async() =>{
         const response = await postData({});
@@ -41,6 +42,12 @@ export const VentasC = () => {
     useEffect( () =>{
         sumaTotal();
     },[carritoP])
+
+    useEffect(() => {
+        if (!(localStorage.getItem('products') === null)) {
+            setContador(JSON.parse(localStorage.getItem('products')).length);
+        }   
+    },[]);
  
     const toast = useRef(null);
 
@@ -147,6 +154,9 @@ export const VentasC = () => {
         if (item.stock >= 0){
             setCarritoP([...carritoP, carritoProd]);
             setContador(contador + 1);
+
+            // Guardar en el almacenamiento local
+            guardarEnStorage(carritoProd);
         }
         else{
             showSticky();
@@ -154,6 +164,24 @@ export const VentasC = () => {
       }
        //e.target.disabled = true;
        //sumaTotal();
+    }
+
+    const guardarEnStorage = producto =>{
+        // conseguir los elementos que tengo ya en el local storage
+        let elementos = JSON.parse(localStorage.getItem("products"));
+       
+       // comprobar si es un array
+       if(Array.isArray(elementos)){
+            elementos.push(producto);
+       }else{
+            elementos = [producto];
+       }
+       localStorage.setItem("products" , JSON.stringify(elementos));
+       console.log("Storage1" , elementos);
+
+      // setProductoStorage(elementos);
+       //console.log("Storage2",productoStorage);
+       //return producto;
     }
 
     const sumaTotal = () => {
