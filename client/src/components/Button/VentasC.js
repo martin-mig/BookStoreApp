@@ -28,8 +28,6 @@ export const VentasC = () => {
     const [contador, setContador] = useState(0);
     const [sumaPrecio, setSumaPrecio] = useState(0);
 
-   // const [productoStorage, setProductoStorage] = useState([]);
-
     const getProducts = async() =>{
         const response = await postData({});
         setProducts(response);
@@ -89,7 +87,6 @@ export const VentasC = () => {
         }
     };
     const finalizarCompra = (sumaPrecio,carritoP) => {
-       // navigate('/consultas/finalizar-compra');
         navigate('/consultas/finalizar-compra', { state: { sumaPrecio,carritoP} });
     } 
 
@@ -99,7 +96,6 @@ export const VentasC = () => {
             <div className={className}>
                 <div className="flex align-items-center gap-2">
                     <Dropdown options={sortOptions} value={sortKey} optionLabel="label" placeholder="Sort By Price" onChange={onSortChange} className="flex justify-start w-full sm:w-14rem" />
-                {/* <Button rounded text severity="success" aria-label="Search" icon="pi pi-shopping-cart"></Button>*/}
                 </div>
                 <div className="grid">
                     <div class="col">
@@ -119,8 +115,8 @@ export const VentasC = () => {
         )
     };
 
-    const showSticky = () => {
-        toast.current.show({ severity: 'info', summary: 'Sticky', detail: 'Message Content', sticky: true });
+    const showSticky = (stock) => {
+        toast.current.show({ severity: 'info', summary: 'Warning', detail: 'You cannot purchase more than the current stock of the product that is equal to '+ stock , sticky: true });
     };
 
     const btnCarrito = (item) =>{
@@ -138,7 +134,7 @@ export const VentasC = () => {
             setCarritoP(_carritoP);
         }
         else{
-            showSticky();
+            showSticky(item.stock);
         }
       }
       else{ //carrito nuevo
@@ -151,37 +147,26 @@ export const VentasC = () => {
             contadorProd: 1,
         }
 
-        if (item.stock >= 0){
+        if (item.stock > 0){
             setCarritoP([...carritoP, carritoProd]);
             setContador(contador + 1);
-
-            // Guardar en el almacenamiento local
             guardarEnStorage(carritoProd);
         }
         else{
-            showSticky();
+            showSticky(item.stock);
         }
       }
-       //e.target.disabled = true;
-       //sumaTotal();
     }
 
     const guardarEnStorage = producto =>{
-        // conseguir los elementos que tengo ya en el local storage
         let elementos = JSON.parse(localStorage.getItem("products"));
        
-       // comprobar si es un array
        if(Array.isArray(elementos)){
             elementos.push(producto);
        }else{
             elementos = [producto];
        }
        localStorage.setItem("products" , JSON.stringify(elementos));
-       console.log("Storage1" , elementos);
-
-      // setProductoStorage(elementos);
-       //console.log("Storage2",productoStorage);
-       //return producto;
     }
 
     const sumaTotal = () => {
@@ -234,7 +219,7 @@ export const VentasC = () => {
                         <DataView value={products} itemTemplate={itemTemplate} paginator rows={3} sortField={sortField} sortOrder={sortOrder}/>
                     </div>
                     <div className="col-3" style={{ marginTop: '30px' }}>
-                        <Carrito datoCarrito={carritoP} setdatoCarrito={setCarritoP} contadorBadger={contador} setBadgerContador={setContador}/>
+                        <Carrito datoCarrito={carritoP} setdatoCarrito={setCarritoP} contadorBadger={contador} setBadgerContador={setContador} msj={showSticky}/>
                     </div>
                 </div>
             </Panel>

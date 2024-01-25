@@ -13,8 +13,6 @@ export const FinalizarCompra = () => {
 
     const [envio, setEnvio] = useState('');
 
-   // const [loading, setLoading] = useState(false);
-
     const [mostrarFactura, setMostrarFactura] = useState(false); 
 
     const [selectedPay, setSelectedPay] = useState(null);
@@ -37,7 +35,6 @@ export const FinalizarCompra = () => {
     ];
 
     const groupedItemTemplate = (option) => {
-       // console.log("es la option " , option)
        let classTarjeta = "pi pi-credit-card";
        let classEfectivo = "pi pi-money-bill";
         return (
@@ -59,22 +56,22 @@ export const FinalizarCompra = () => {
             <div className="flex justify-content-between flex-wrap" style={{paddingLeft:'5px'}}>        
                 <div className="flex justify-content-center align-items-center">
                     <div className="flex px-3 align-items-center">
-                        <RadioButton inputId="envio1" value="EnvioDomicilio" onChange={(e) => setEnvio(e.value)} checked={envio === 'EnvioDomicilio'} />
-                        <label htmlFor="envio1" className="px-2 mb-0">Envio a Domicilio</label>
+                        <RadioButton inputId="envio1" value="Home delivery" onChange={(e) => setEnvio(e.value)} checked={envio === 'Home delivery'} />
+                        <label htmlFor="envio1" className="px-2 mb-0">Home delivery</label>
                         <span className="ml-2">
                             <i className="pi pi-car" style={{ fontSize: '1.5rem' }}></i> {/* Agrega el icono del carrito de compras aquí */}
                         </span>
                     </div>
                     <div className="flex px-3 align-items-center">
-                        <RadioButton inputId="envio2" value="RetiroLocal" onChange={(e) => setEnvio(e.value)} checked={envio === 'RetiroLocal'}  />
-                        <label htmlFor="envio2" className="px-2 mb-0">Retiro en el Local</label>
+                        <RadioButton inputId="envio2" value="On-site pickup" onChange={(e) => setEnvio(e.value)} checked={envio === 'On-site pickup'}  />
+                        <label htmlFor="envio2" className="px-2 mb-0">On-site pickup</label>
                         <span className="ml-2">
                             <i className="pi pi-home" style={{ fontSize: '1.5rem' }}></i> {/* Agrega el icono del carrito de compras aquí */}
                         </span>
                     </div>                  
                     <div class="flex pr-5"> 
                         <Dropdown value={selectedPay} onChange={(e) => setSelectedPay(e.value)} options={groupedPay} optionLabel="label" 
-                        optionGroupLabel="label" optionGroupChildren="items" optionGroupTemplate={groupedItemTemplate} className="w-full md:w-14rem text-left" placeholder="Forma de Pago" 
+                        optionGroupLabel="label" optionGroupChildren="items" optionGroupTemplate={groupedItemTemplate} className="w-full md:w-14rem text-left" placeholder="Way to pay" 
                         pt={{
                             item: {className:'text-left'}
                         }}/> 
@@ -82,11 +79,10 @@ export const FinalizarCompra = () => {
                 </div>
 
                 <div class="flex px-3 justify-content-center align-items-center">
-                    <Button icon="pi pi-file" label="Generar Factura" raised severity="info" onClick={cargarFactura} />
+                    <Button icon="pi pi-file" label="Generate invoice" raised severity="info" onClick={cargarFactura} />
                 </div>
             </div>
             {mostrarFactura && <Factura envio={envio} formadepago={selectedPay} carritop= {state.carritoP} sumatotal= {state.sumaPrecio}/>}
-         
         </div>
     )
 }

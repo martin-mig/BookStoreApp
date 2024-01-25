@@ -25,7 +25,7 @@ export const Consultas = () => {
                                 <ButtonNB img_url="sale.png" alt="Sales" nombre="ventasc"/>
                             </div>      
                             <div className="center_image">
-                                <ButtonNB img_url="descargas.png" alt="Dowload" nombre="descargasc"/>
+                                <ButtonNB img_url="notes.png" alt="Notes" nombre="descargasc"/>
                             </div> 
                         </div>
                     </div>

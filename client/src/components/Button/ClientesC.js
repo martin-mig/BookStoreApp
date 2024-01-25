@@ -3,7 +3,9 @@ import React from 'react'
 export const ClientesC = () => {
     return(
         <>
-            <h1>Pagina de consulta de clientes</h1>    
+            <div className="container">
+                <img src={require('../../images/website.jpg')} style={{marginTop:'70px'}} ></img>
+            </div>     
         </>
     )
 }

@@ -54,7 +54,10 @@ body{
 .with-nav-tabs.panel-primary .nav-tabs > li > a:hover, .with-nav-tabs.panel-primary .nav-tabs > li > a:focus {
     background-color: #428bca;
 }
-
+.disabled {
+    pointer-events:none; 
+    opacity:0.6;        
+}
 .activado{
 
     color: #428bca;
@@ -190,27 +193,6 @@ table.dataTable td {
     justify-content: center;
     width: 100%;
   }
-
-  
-  
-  /*.input-bar-item {
-    margin-right: 5px;
-  }
-  
-  .form-inline {
-    display: flex;
-    align-items: center;
-  }
-  
-  .smaller-input {
-    width: 100%;
-  }
-  
-  .smaller-button {
-    width: 100px; 
-    margin-left: 5px; 
-  }
-  */
 
 .input-bar {
     display: flex;

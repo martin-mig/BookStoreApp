@@ -2,6 +2,7 @@ import React from 'react'
 import { FileTable } from '../FileTable';
 import { useState } from "react";
 import { CheckboxInput } from '../CheckboxInput';
+import { Button } from 'primereact/button';
 
 export const Libros = () => {
 
@@ -86,10 +87,7 @@ export const Libros = () => {
 
                                 <div className="panel-body" style={{ width: '10%' }}>
 
-                                    <button type="submit" style={{ marginTop: '10px' }}>
-                                        <img src={require('../../images/search2.png')} alt="search"></img>
-                                        &nbsp;<strong> Buscar</strong>
-                                    </button>
+                                    <Button type="submit" label="Search"  icon="pi pi-search" style={{ marginTop: '10px' }} text raised />
 
                                 </div>
                             </div>

@@ -22,9 +22,9 @@ export const Factura = ({envio,formadepago,carritop,sumatotal}) =>{
                     <p>Tel: +5491142448580 </p>
                 </div>
                 <div style={{fontFamily: 'Calibri, sans-serif',fontWeight: 'bold',marginLeft:'10px'}}>
-                    <p>Datos Bancarios:</p>
-                    <p>Titular de la Cuenta:</p>
-                    <p>CBU:</p>
+                    <p>Bank data</p>
+                    <p>Account holder</p>
+                    <p>CBU</p>
                 </div>
             </div>
         );
@@ -53,11 +53,11 @@ export const Factura = ({envio,formadepago,carritop,sumatotal}) =>{
                     <p>
                         <div className="grid">
                             <div className="col-12">
-                                <h1 style={{fontFamily: 'Calibri, sans-serif',fontWeight: 'bold',color: 'blue', fontSize: '30px',float:'left'}}>Factura</h1>
+                                <h1 style={{fontFamily: 'Calibri, sans-serif',fontWeight: 'bold',color: 'blue', fontSize: '30px',float:'left'}}>Invoice</h1>
                             </div>
                             <div className="col-4">
                                 <i class="pi pi-user px-2" style={{fontSize: '1.5rem'}}></i>
-                                <InputText type="text" className="p-inputtext-sm px-2" placeholder="Cliente" />
+                                <InputText type="text" className="p-inputtext-sm px-2" placeholder="Customer" />
                             </div>
                             <div className="col-4">
                                 <i class="pi pi-calendar px-2"  style={{fontSize: '1.5rem'}}></i>
@@ -78,9 +78,9 @@ export const Factura = ({envio,formadepago,carritop,sumatotal}) =>{
                         </div> 
                         <DataTable value={carritop} showGridlines tableStyle={{ minWidth: '50rem',marginTop:'40px' }}>
                             <Column body={(rowData, props) => props.rowIndex + 1} header="Item"></Column>
-                            <Column field="titleProd" header="Descripcion"></Column>
-                            <Column field="contadorProd" header="Cantidad"></Column>
-                            <Column field="priceProd" header="Precio"></Column>
+                            <Column field="titleProd" header="Description"></Column>
+                            <Column field="contadorProd" header="Amount"></Column>
+                            <Column field="priceProd" header="Price"></Column>
                         </DataTable>
                     </p>
                 </Panel>
@@ -88,7 +88,7 @@ export const Factura = ({envio,formadepago,carritop,sumatotal}) =>{
             (
                 <Card className='mt-6'>
                     <p className='m-0 font-bold text-5xl'>
-                        El carrito esta vacio.
+                        The cart is empty.
                     </p>
                 </Card>
             )

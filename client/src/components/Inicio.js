@@ -18,18 +18,18 @@ export const Inicio = () => {
    
                                 >Searchs </NavLink>
                             </li>
-                            <li  id="stock">
+                            <li  id="stock" className="disabled" >
                                 <NavLink 
                                     to="/stock"
                                    className={
                                     ({isActive}) => {
                                         return isActive ? "active" : "";
                                     }
-                                   }
+                                }
    
                                 >Stock </NavLink>
                             </li>
-                            <li  id="venta">
+                            <li  id="venta" className="disabled">
                                 <NavLink 
                                     to="/venta"
                                    className={
@@ -40,7 +40,7 @@ export const Inicio = () => {
    
                                 >Sale </NavLink>
                             </li>
-                            <li  id="clientes">
+                            <li  id="clientes" className="disabled">
                                 <NavLink 
                                     to="/clientes"
                                    className={
@@ -51,7 +51,7 @@ export const Inicio = () => {
    
                                 >Customers </NavLink>
                             </li>
-                            <li  id="usuarios">
+                            <li  id="usuarios" className="disabled">
                                 <NavLink 
                                     to="/usuarios"
                                    className={
@@ -62,7 +62,7 @@ export const Inicio = () => {
    
                                 >Users </NavLink>
                             </li>
-                            <li  id="usuarios">
+                            <li  id="sistem" className="disabled">
                                 <NavLink 
                                     to="/sistema"
                                    className={
