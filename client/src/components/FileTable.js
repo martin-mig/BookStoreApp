@@ -21,7 +21,7 @@ export const FileTable = ( data ) => {
        title: '',
        isbn: '',
        pageCount: 0,
-       publishedDate: 0,
+       publishedDate: new Date().toLocaleDateString('en-US'),
        shortDescription: '',
        status: '',
        authors: [],
