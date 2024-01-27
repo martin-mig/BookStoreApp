@@ -12,7 +12,7 @@ import { Toast } from 'primereact/toast';
 import { useNavigate } from 'react-router-dom';
 
 export const VentasC = () => {
-    const [ajaxUrl, SetAjaxUrl] = useState("http://localhost:3002/search-books");
+    const [ajaxUrl, SetAjaxUrl] = useState(process.env.REACT_APP_API + "/search-books");
     const { databook , loading, error, postData, putData, deleteData } = useAjax(ajaxUrl);
 
     const [products, setProducts] = useState([]);

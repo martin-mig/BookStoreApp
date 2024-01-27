@@ -135,7 +135,7 @@ export const FileTable = ( data ) => {
         setSubmitted(false);
         setProductDialog(true);
         setDialogType('add');
-        SetAjaxUrl('http://localhost:3002/add-book');
+        SetAjaxUrl(process.env.BACKEND_URI + '/add-book');
     };
 
     const modifySelected = () =>{
@@ -146,7 +146,7 @@ export const FileTable = ( data ) => {
             setProductDialog(true); 
             setDialogType('modify');
             setModifiedProduct(selectedProducts[0]);
-            SetAjaxUrl('http://localhost:3002/edit-book');
+            SetAjaxUrl(process.env.REACT_APP_API + "/edit-book");
         }
     }
 
@@ -156,7 +156,7 @@ export const FileTable = ( data ) => {
 
     const confirmDeleteSelected = () => {
         setDeleteProductsDialog(true);
-        SetAjaxUrl("http://localhost:3002/delete-books");
+        SetAjaxUrl(process.env.REACT_APP_API + "/delete-books");
     };
 
     const leftToolbarTemplate = () => {

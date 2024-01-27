@@ -42,8 +42,7 @@ export const Libros = () => {
         }
 
         setBooks(books);
-
-        const peticion = await fetch("http://localhost:3002/search-books", {
+        const peticion = await fetch(process.env.REACT_APP_API + "/search-books", {
             method: "POST", // Usa el método POST para enviar datos al servidor
             headers: {
                 "Content-Type": "application/json", // Establece el tipo de contenido a JSON
