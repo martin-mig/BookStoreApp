@@ -135,7 +135,7 @@ export const FileTable = ( data ) => {
         setSubmitted(false);
         setProductDialog(true);
         setDialogType('add');
-        SetAjaxUrl(process.env.BACKEND_URI + '/add-book');
+        SetAjaxUrl(process.env.REACT_APP_API + '/add-book');
     };
 
     const modifySelected = () =>{
