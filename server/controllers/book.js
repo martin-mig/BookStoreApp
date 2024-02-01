@@ -67,14 +67,37 @@ const agregarLibro = async (req,res) => {
 const conseguirLibros = async (req,res) => {
  
     const books = req.body; // Accede a los datos enviados desde el cliente
-
+    console.log("ESTE ES EL LIBRO ");
+   
     const query = {};
 
-    for (const key in books) {
+    /*for (const key in books) {
         if (books[key] !== '') {
             query[key] = { $regex: `.*${books[key]}.*`, $options: 'i' };
         }
     }
+
+    console.log("Esta es la query", query);
+*/
+
+  for (const key in books) {
+    console.log("es la key", key)
+    if (books[key] !== '') {
+        if (key === 'stock') {
+            if (books[key] === 'IN STOCK') {
+                query[key] = { $gte: 50 };
+            } else if (books[key] === 'LOW STOCK') {
+                query[key] = { $gte: 1, $lt: 50 };
+            } else if (books[key] === 'OUT OF STOCK') {
+                query[key] = 0;
+            } else {
+                query[key] = { $regex: `.*${books[key]}.*`, $options: 'i' };
+            }
+        } else {
+            query[key] = { $regex: `.*${books[key]}.*`, $options: 'i' };
+        }
+    }
+  }
 
     let resultmongo = await  bookModel.find(query);
     console.log("SERVER: Resultado de mongo " + resultmongo);
@@ -83,6 +106,8 @@ const conseguirLibros = async (req,res) => {
  
     console.log("SERVER: Esta es la query: ", query);
     return res.end();
+    
+    
 }
 
 module.exports ={

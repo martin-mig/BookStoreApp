@@ -29,13 +29,14 @@ export const Libros = () => {
     const conseguirDatosFormulario = async (e) => {
         e.preventDefault();
         let datos = e.target;
-        console.log("Este es el e:", e);
-
+      
+       console.log("STOCK", datos.stock.value);
 
         let books = {
             title: datos.title.value,
             isbn: datos.isbn.value,
-           // authors: datos.author.value,
+            authors: datos.author.value,
+            stock: datos.stock.value
           //  categories: datos.category.value,
            // status: datos.status.value,
            // publishedDate: datos.published.value,

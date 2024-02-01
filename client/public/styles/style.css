@@ -221,3 +221,13 @@ table.dataTable td {
     margin: 0px auto;
     padding-top: 2px;
 }
+
+.input-error {
+    border: 1px solid red;
+}
+
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 4px;
+  }
