@@ -69,7 +69,7 @@ export const FinalizarCompra = () => {
                             <i className="pi pi-home" style={{ fontSize: '1.5rem' }}></i> {/* Agrega el icono del carrito de compras aquí */}
                         </span>
                     </div>                  
-                    <div class="flex pr-5"> 
+                    <div className="flex pr-5"> 
                         <Dropdown value={selectedPay} onChange={(e) => setSelectedPay(e.value)} options={groupedPay} optionLabel="label" 
                         optionGroupLabel="label" optionGroupChildren="items" optionGroupTemplate={groupedItemTemplate} className="w-full md:w-14rem text-left" placeholder="Way to pay" 
                         pt={{
@@ -78,7 +78,7 @@ export const FinalizarCompra = () => {
                     </div>
                 </div>
 
-                <div class="flex px-3 justify-content-center align-items-center">
+                <div className="flex px-3 justify-content-center align-items-center">
                     <Button icon="pi pi-file" label="Generate invoice" raised severity="info" onClick={cargarFactura} />
                 </div>
             </div>

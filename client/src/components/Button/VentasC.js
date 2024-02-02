@@ -98,13 +98,13 @@ export const VentasC = () => {
                     <Dropdown options={sortOptions} value={sortKey} optionLabel="label" placeholder="Sort By Price" onChange={onSortChange} className="flex justify-start w-full sm:w-14rem" />
                 </div>
                 <div className="grid">
-                    <div class="col">
-                        <div class="text-center pb-3 pt-3">
+                    <div className="col">
+                        <div className="text-center pb-3 pt-3">
                         <strong>{(sumaPrecio != 0) ? ('Total: $' + sumaPrecio) : ''}</strong>
                         </div>
                     </div>
-                    <div class="col-fixed" style={{width:"100px"}}>
-                        <div class="text-center">
+                    <div className="col-fixed" style={{width:"100px"}}>
+                        <div className="text-center">
                             <Button  className='mr-8' type="button" rounded text severity="success" onClick={()=>finalizarCompra(sumaPrecio,carritoP)} outlined icon="pi pi-cart-plus" size="large">
                                 <Badge value={contador} severity="danger" ></Badge>
                             </Button>   

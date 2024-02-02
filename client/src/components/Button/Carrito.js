@@ -139,16 +139,16 @@ export const Carrito = ({datoCarrito, setdatoCarrito, contadorBadger, setBadgerC
                                 footer: { className: 'pt-0' },
                             }}>
                             <div className='grid nested-grid'>
-                                <div class="col-4 flex align-items-center" style={{maxWidth:"96px", maxHeight:"100px"}}>
+                                <div className="col-4 flex align-items-center" style={{maxWidth:"96px", maxHeight:"100px"}}>
                                         {book.imagenProd ? (<img  className="w-full" src={require('../../images/' + book.imagenProd + '.png')}/>) : null}
                                 </div>   
-                                <div class="col-8">
-                                    <div class="grid">
-                                        <div class="col-12 pb-0">
-                                            <p  class="lg:text-base md:text-sm sm:text-xs text-left mb-0" style={{fontWeight: 'bold' }}>{book.titleProd ? book.titleProd : "Carrito vacío"}</p>
+                                <div className="col-8">
+                                    <div className="grid">
+                                        <div className="col-12 pb-0">
+                                            <p  className="lg:text-base md:text-sm sm:text-xs text-left mb-0" style={{fontWeight: 'bold' }}>{book.titleProd ? book.titleProd : "Carrito vacío"}</p>
                                         </div>
-                                        <div class="col-12">
-                                            <p  class="lg:text-base md:text-sm sm:text-xs text-left mb-0" style={{ color: 'red', fontWeight: 'bold' }}>{book.priceProd ? "$" + book.priceProd : ""}</p>
+                                        <div className="col-12">
+                                            <p  className="lg:text-base md:text-sm sm:text-xs text-left mb-0" style={{ color: 'red', fontWeight: 'bold' }}>{book.priceProd ? "$" + book.priceProd : ""}</p>
                                         </div>
                                     </div>
                                 </div> 

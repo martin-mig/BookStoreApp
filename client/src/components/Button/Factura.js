@@ -56,23 +56,23 @@ export const Factura = ({envio,formadepago,carritop,sumatotal}) =>{
                                 <h1 style={{fontFamily: 'Calibri, sans-serif',fontWeight: 'bold',color: 'blue', fontSize: '30px',float:'left'}}>Invoice</h1>
                             </div>
                             <div className="col-4">
-                                <i class="pi pi-user px-2" style={{fontSize: '1.5rem'}}></i>
+                                <i className="pi pi-user px-2" style={{fontSize: '1.5rem'}}></i>
                                 <InputText type="text" className="p-inputtext-sm px-2" placeholder="Customer" />
                             </div>
                             <div className="col-4">
-                                <i class="pi pi-calendar px-2"  style={{fontSize: '1.5rem'}}></i>
+                                <i className="pi pi-calendar px-2"  style={{fontSize: '1.5rem'}}></i>
                                 <InputText type="text" value={fechaHoy} disabled  className="p-inputtext-sm px-2" placeholder="" />
                             </div>
                             <div className="col-4">
-                                <i class="pi pi-car px-2" style={{fontSize: '1.5rem'}}></i>
+                                <i className="pi pi-car px-2" style={{fontSize: '1.5rem'}}></i>
                                 <InputText type="text" value={envio} className="p-inputtext-sm px-2" placeholder="" />
                             </div>
                             <div className="col-4">
-                                <i class="pi pi-credit-card px-2" style={{fontSize: '1.5rem'}}></i>
+                                <i className="pi pi-credit-card px-2" style={{fontSize: '1.5rem'}}></i>
                                 <InputText type="text" value={formadepago} className="p-inputtext-sm px-2" placeholder="" />
                             </div>
                             <div className="col-4">
-                                <i class="pi pi-tag px-2" style={{fontSize: '1.5rem'}}></i>
+                                <i className="pi pi-tag px-2" style={{fontSize: '1.5rem'}}></i>
                                 <InputText type="text" value="No" disabled className="p-inputtext-sm px-2" placeholder="" />
                             </div>
                         </div> 

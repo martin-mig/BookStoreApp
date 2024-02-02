@@ -29,9 +29,7 @@ export const Libros = () => {
     const conseguirDatosFormulario = async (e) => {
         e.preventDefault();
         let datos = e.target;
-      
-        console.log("STOCK", datos.stock.value);
-
+    
         let books = {
             title: datos.title.value,
             isbn: datos.isbn.value,
