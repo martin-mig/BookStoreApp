@@ -30,7 +30,7 @@ export const Libros = () => {
         e.preventDefault();
         let datos = e.target;
       
-       console.log("STOCK", datos.stock.value);
+        console.log("STOCK", datos.stock.value);
 
         let books = {
             title: datos.title.value,

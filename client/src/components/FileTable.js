@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Rating } from 'primereact/rating';
@@ -13,10 +13,12 @@ import { Calendar } from 'primereact/calendar';
 import { Toast } from 'primereact/toast';
 import { useAjax } from '../hooks/useAjax';
 import { Dropdown } from 'primereact/dropdown';
+import uuid from 'react-uuid'
 
 export const FileTable = ( data ) => {
     let emptyProduct = {
-       _id: null,
+     //  _id: null,
+       _id: '',
        title: '',
        isbn: '',
        pageCount: 0,
@@ -26,6 +28,7 @@ export const FileTable = ( data ) => {
        authors: [],
        categories: '' ,
        rating: 0,
+       stock: 0,
        price: 0
 
     };
@@ -41,6 +44,7 @@ export const FileTable = ( data ) => {
         "Miscellaneous"
     ];
 
+    
     const [ajaxUrl, SetAjaxUrl] = useState("");
     const { databook , loading, error, postData, putData, deleteData } = useAjax(ajaxUrl);
 
@@ -76,6 +80,7 @@ export const FileTable = ( data ) => {
 
     useEffect(() => {
         setProducts(initialData);
+        setSelectedProducts(null);
     }, [initialData]); 
 
     const allowExpansion = () => {
@@ -246,7 +251,7 @@ export const FileTable = ( data ) => {
 
     const onInputNumberChange = (e, name) => {
         const val = e.value || 0;
-
+    
         if(dialogType === 'modify'){
             let _modifiedProduct = { ...modifiedProduct };
 
@@ -284,7 +289,6 @@ export const FileTable = ( data ) => {
     };
 
     const validarCamposVacios = (_product) => {
-      console.log("product modificado " , _product)
         if((_product.title === '')){
             setErrorInputs(prevState => ({
                 ...prevState,
@@ -316,13 +320,20 @@ export const FileTable = ( data ) => {
         let _products = [...products];
         let _product = { ...product };
         if (operacion === 'add'){
-            
+            const newProdUuid = uuid();
+            _product._id = newProdUuid;
+            // chancho hacer esto
+          //  _product.idP = product.idP;
+            console.log("producto generado", _product)
             result = validarCamposVacios(_product);
             
-            console.log("AjaxURL " + ajaxUrl);
             if (result){
+                console.log("_product antes del push",_product)
                 _products.push(_product);
-                postData(product);
+             
+                // el problea esta aca...por que product no tiene el id ya que no se creo cuando se realizo el Dialog por eso puse el _product
+               // postData(product);
+                postData(_product);
                 setProducts(_products);
             }
         }else
@@ -436,6 +447,7 @@ export const FileTable = ( data ) => {
                         <label htmlFor="title" className="font-bold">
                             Title
                         </label>
+
                         <InputText id="title" required className={errorInputs.title ? 'input-error' : ''} value = {(dialogType === 'add') ? product.title : modifiedProduct.title}  placeholder='Title' onChange={(e) => onInputChange(e, 'title')} />
                         {errorInputs.title && <div className="error-message">Este campo no puede estar vacío</div>}
                     </div>
@@ -458,16 +470,16 @@ export const FileTable = ( data ) => {
                         <label htmlFor="stock" className="font-bold">
                             Stock
                         </label>
-                        <InputNumber id="stock" value = {(dialogType === 'add') ? product.stock : modifiedProduct.stock} onValueChange={(e) => onInputNumberChange(e, 'stock')} mode="decimal" />
+                        <InputNumber id="stock"  value = {(dialogType === 'add') ? product.stock : modifiedProduct.stock} onValueChange={(e) => onInputNumberChange(e, 'stock')} min={0} mode="decimal" />
                     </div>
                     <div className="field col">
                         <label htmlFor="pages" className="font-bold">
                             Pages
                         </label>
-                        <InputNumber id="pages" value = {(dialogType === 'add') ? product.pageCount : modifiedProduct.pageCount} onValueChange={(e) => onInputNumberChange(e, 'pageCount')} />
+                        <InputNumber id="pages" value = {(dialogType === 'add') ? product.pageCount : modifiedProduct.pageCount} onValueChange={(e) => onInputNumberChange(e, 'pageCount')} min={1}/>
                     </div>
                     <div className="field col">
-                        <label labelFor="buttondisplay" className="font-bold block mb-2">
+                        <label /*labelFor="buttondisplay"*/ className="font-bold block mb-2">
                             Published
                         </label>
                         <Calendar id="buttondisplay" value = {(dialogType === 'add') ? (product.publishedDate) : convertirFormatoFecha(modifiedProduct.publishedDate)} onChange={(e) => onDateChange(e, 'publishedDate')} showIcon />
@@ -475,7 +487,7 @@ export const FileTable = ( data ) => {
                 </div>
                 <div className="formgrid grid">
                     <div className="field col">
-                        <label labelFor="categories" className="font-bold">
+                        <label /*labelFor="categories"*/ className="font-bold">
                             Category
                         </label>
                         <Dropdown id="categories" value={(dialogType === 'add') ? (product.categories) : (modifiedProduct.categories)} onChange={(e) => onInputChange(e, 'categories')} options={categoryProduct} 
@@ -485,13 +497,13 @@ export const FileTable = ( data ) => {
                         <label htmlFor="price" className="font-bold">
                             Price
                         </label>
-                        <InputNumber id="price" value = {(dialogType === 'add') ? product.price : modifiedProduct.price} onValueChange={(e) => onInputNumberChange(e, 'price')} mode="decimal" />
+                        <InputNumber id="price" min={0} value = {(dialogType === 'add') ? product.price : modifiedProduct.price} onValueChange={(e) => onInputNumberChange(e, 'price')} mode="decimal" />
                     </div>
                     <div className="field col">
                         <label htmlFor="rating" className="font-bold">
                             Rating
                         </label>
-                        <InputNumber id="rating" value = {(dialogType === 'add') ? product.rating : modifiedProduct.rating} onValueChange={(e) => onInputNumberChange(e, 'rating')} mode="decimal" />
+                        <InputNumber id="rating"  value = {(dialogType === 'add') ? product.rating : modifiedProduct.rating} onValueChange={(e) => onInputNumberChange(e, 'rating')} min={0} max={5} placeholder='1-5'  mode="decimal" />
                     </div>
                 
                 </div>

@@ -24,7 +24,7 @@ const borrarLibros = async (req, res) => {
     idBooksToDelete._id.$in.push(ele._id);
   })
 
-  console.log("id de libros a borrar: ", idBooksToDelete._id);
+  console.log("id de libros a borrar: ", idBooksToDelete.id);
 
   let result = bookModel.deleteMany(idBooksToDelete)
   .then((documentoGuardado) => {
@@ -49,7 +49,8 @@ const editBook = async (req,res) => {
 }
 
 const agregarLibro = async (req,res) => {
-    const book = req.body;
+  const book = req.body;
+  console.log("Este es el book  agregar", book);
   bookModel.create(book)
   .then((documentoGuardado) => {
     console.log('Libro guardado con éxito:', documentoGuardado);

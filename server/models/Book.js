@@ -2,7 +2,8 @@ const mongoose = require ("mongoose");
 const {Schema, model} = mongoose;
 
 const BookSchema = Schema({
-    _id: mongoose.ObjectId,
+  //  _id: mongoose.ObjectId,
+    _id: String,
     title: String,
     isbn: String,
     pageCount: Number,
