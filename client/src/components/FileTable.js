@@ -13,11 +13,11 @@ import { Calendar } from 'primereact/calendar';
 import { Toast } from 'primereact/toast';
 import { useAjax } from '../hooks/useAjax';
 import { Dropdown } from 'primereact/dropdown';
+import { Imagen } from './Button/Imagen';
 import uuid from 'react-uuid'
 
 export const FileTable = ( data ) => {
     let emptyProduct = {
-     //  _id: null,
        _id: '',
        title: '',
        isbn: '',
@@ -33,6 +33,16 @@ export const FileTable = ( data ) => {
 
     };
 
+    let emptyErrorInput = {
+        title: false,
+        //isbn: false,
+        isbn: {
+            vacio: false,
+            existe: false,
+        }
+
+    }
+
     const categoryProduct = [
         "Programming",
         "Novel",
@@ -45,7 +55,7 @@ export const FileTable = ( data ) => {
     ];
 
     
-    const [ajaxUrl, SetAjaxUrl] = useState("");
+    const [ajaxUrl, SetAjaxUrl] = useState(/*process.env.REACT_APP_API + "/search-books"*/'');
     const { databook , loading, error, postData, putData, deleteData } = useAjax(ajaxUrl);
 
     const initialData = data.data;
@@ -68,21 +78,27 @@ export const FileTable = ( data ) => {
 
     const [modifyProductDialog, setmodifyProductDialog] = useState(false);
 
-    const [errorInput, setErrorInput] = useState(false);
-    
-    const [errorInputs, setErrorInputs] = useState({
-        title: false,
-        isbn: false,
-    });
+   
+    const [errorInputs, setErrorInputs] = useState(emptyErrorInput);
+    const [productsInput, setProductInput] = useState();
 
     const toast = useRef(null);
     const dt = useRef(null);
+    const ref = useRef(null);
 
     useEffect(() => {
         setProducts(initialData);
         setSelectedProducts(null);
     }, [initialData]); 
 
+   /* useEffect(() => {
+  
+        postData({});
+        setProductInput(databook);
+        console.log("DATABOOK", databook);
+
+    },[]);
+*/
     const allowExpansion = () => {
         return true;
     };
@@ -189,6 +205,7 @@ export const FileTable = ( data ) => {
     };
 
     const hideDialog = () => {
+        setErrorInputs(emptyErrorInput);
         setSubmitted(false);
         setProductDialog(false);
     };
@@ -289,23 +306,45 @@ export const FileTable = ( data ) => {
     };
 
     const validarCamposVacios = (_product) => {
+        SetAjaxUrl(process.env.REACT_APP_API + "/search-books");
+        postData({});
+        console.log("DATA BOKK" , databook);
+        const existeISBN = databook.some(objeto => objeto.isbn === _product.isbn);
+        console.log("Es el _product", _product);
+        console.log("Es el producto", products)
+
+        console.log("Resultado de existeConSome" ,  existeISBN);
+
         if((_product.title === '')){
             setErrorInputs(prevState => ({
                 ...prevState,
                 title: true,
-            }));
-           
+            })); 
+        }
+
+        if (existeISBN) {
+            setErrorInputs(prevState => ({
+                ...prevState,
+                isbn: {
+                    ...prevState.isbn,
+                    existe: true,
+                },
+            })); 
         }
 
         if((_product.isbn === '')){
             setErrorInputs(prevState => ({
                 ...prevState,
-                isbn: true,
+                isbn: {
+                    ...prevState.isbn,
+                    vacio: true,
+                },
             }));
-            
         }
 
-        if((_product.title === '') || (_product.isbn === '')){
+    
+
+        if((_product.title === '') || (_product.isbn === '') || (existeISBN)){
             return false;
         }
         else {
@@ -322,17 +361,14 @@ export const FileTable = ( data ) => {
         if (operacion === 'add'){
             const newProdUuid = uuid();
             _product._id = newProdUuid;
-            // chancho hacer esto
-          //  _product.idP = product.idP;
+        
             console.log("producto generado", _product)
             result = validarCamposVacios(_product);
             
             if (result){
                 console.log("_product antes del push",_product)
                 _products.push(_product);
-             
-                // el problea esta aca...por que product no tiene el id ya que no se creo cuando se realizo el Dialog por eso puse el _product
-               // postData(product);
+                ref.current.upload();
                 postData(_product);
                 setProducts(_products);
             }
@@ -449,14 +485,21 @@ export const FileTable = ( data ) => {
                         </label>
 
                         <InputText id="title" required className={errorInputs.title ? 'input-error' : ''} value = {(dialogType === 'add') ? product.title : modifiedProduct.title}  placeholder='Title' onChange={(e) => onInputChange(e, 'title')} />
-                        {errorInputs.title && <div className="error-message">Este campo no puede estar vacío</div>}
+                        {errorInputs.title && <div className="error-message">This field can not be blank</div>}
                     </div>
                     <div className="field col">
                         <label htmlFor="isbn" className="font-bold">
                             ISBN
                         </label>
                         <InputText id="isbn" required value = {(dialogType === 'add') ? product.isbn : modifiedProduct.isbn} placeholder= 'ISBN' onChange={(e) => onInputChange(e, 'isbn')} />
-                        {errorInputs.isbn && <div className="error-message">Este campo no puede estar vacío</div>}
+                        {errorInputs.isbn.vacio && (
+                        <div className="error-message">This field cannot be blank</div>
+                        )}
+
+                        {errorInputs.isbn.existe && (
+                        <div className="error-message">This field {product.isbn} already exists</div>
+                        )}
+                       
                     </div>
                     <div className="field col">
                         <label htmlFor="author"  className="font-bold">
@@ -505,7 +548,6 @@ export const FileTable = ( data ) => {
                         </label>
                         <InputNumber id="rating"  value = {(dialogType === 'add') ? product.rating : modifiedProduct.rating} onValueChange={(e) => onInputNumberChange(e, 'rating')} min={0} max={5} placeholder='1-5'  mode="decimal" />
                     </div>
-                
                 </div>
                 <div className="field">
                     <label htmlFor="description" className="font-bold">
@@ -513,6 +555,16 @@ export const FileTable = ( data ) => {
                     </label>
                     <InputTextarea id="description"  value = {(dialogType === 'add') ? product.shortDescription : modifiedProduct.shortDescription} placeholder= "Short Description" onChange={(e) => onInputChange(e, 'shortDescription')} required rows={3} cols={20} />
                 </div>
+
+                <div className="formgrid grid">
+                    <div className="field col">
+                        <label /*labelFor="categories"*/ className="font-bold">
+                            Imagen
+                        </label>
+                            <Imagen ref={ref}/>
+                    </div>
+                </div>   
+
             </Dialog>
 
             <Dialog visible={modifyProductDialog} style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header="Error" modal onHide={hideModifyProductsDialog}>
@@ -528,8 +580,6 @@ export const FileTable = ( data ) => {
 
             <Dialog visible={deleteProductsDialog} style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={headerDialogDelete} modal footer={deleteProductsDialogFooter} onHide={hideDeleteProductsDialog}>
                 <div className="confirmation-content">
-                   {/* <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />*/}
-                   {/* {product && <span>Are you sure you want to delete the selected books?</span>} */}
                    {deleteProductsDialog && <span>Are you sure you want to delete the folowwing {selectedProducts.length}  {selectedProducts.length > 1 ? ('products') : ('product')} :</span>}
                    <p></p>
                    {deleteProductsDialog && 

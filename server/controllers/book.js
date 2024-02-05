@@ -72,15 +72,6 @@ const conseguirLibros = async (req,res) => {
    
     const query = {};
 
-    /*for (const key in books) {
-        if (books[key] !== '') {
-            query[key] = { $regex: `.*${books[key]}.*`, $options: 'i' };
-        }
-    }
-
-    console.log("Esta es la query", query);
-*/
-
   for (const key in books) {
     console.log("es la key", key)
     if (books[key] !== '') {
@@ -111,10 +102,22 @@ const conseguirLibros = async (req,res) => {
     
 }
 
+const subirImagen = (req, res) => {
+  // req.file contiene la información sobre el archivo subido por Multer
+  if (!req.file) {
+    return res.status(400).json({ error: 'No se proporcionó ningún archivo.' });
+  }
+ 
+  // Puedes realizar más operaciones aquí, como guardar la ruta del archivo en una base de datos
+ 
+  res.json({ message: 'Archivo: ' + req.file.filename + ' subido exitosamente.' });
+};
+
 module.exports ={
     conseguirLibros,
     conseguirUsuarios,
     agregarLibro,
     borrarLibros,
     editBook,
+    subirImagen,
 }
